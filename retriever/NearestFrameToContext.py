@@ -95,8 +95,9 @@ class FrameRetriever:
 
 class ProcessFramesResource:
     def on_post(self, req, resp):
+        print("recieved req")
         data = req.media
-        s3_path = data.get('s3_path')
+        s3_path = data.get('s3Path')
         context = data.get('query')
         if not s3_path or not context:
             resp.status = falcon.HTTP_400
@@ -126,5 +127,5 @@ class ProcessFramesResource:
         # Upload the most similar frame and get its S3 path
         s3_frame_path = retriever.upload_frame(s3_bucket, s3_key, most_similar_frame)
 
-        result = {"frame": { "bucket": s3_bucket,"key":s3_frame_path},  "caption": most_similar_caption, "similarity_score": max_score}
+        result = {"frame": { "bucket": s3_bucket,"key":s3_frame_path},  "caption": most_similar_caption, "similarityScore": max_score}
         resp.media = result
