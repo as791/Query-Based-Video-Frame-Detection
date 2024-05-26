@@ -2,20 +2,26 @@ from io import BytesIO
 from django.http import JsonResponse
 from transformers import CLIPProcessor, CLIPModel, BertTokenizer, BertModel
 import torch
-from datasets import load_dataset
-from rest_framework.views import APIView
-import os
 import faiss
 import boto3
-import matplotlib.pyplot as plt
+import os
 from PIL import Image
-import glob
 import numpy as np
 import torch.nn.functional as F
+from moviepy.editor import VideoFileClip
 import pickle
+import falcon
+import base64
+
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 class ClipBasedFrameRetriever:
     def __init__(self):
+        # AWS credentials
+        self.aws_access_key_id = 'AKIA2SQC4BMAYRGKLZDH'
+        self.aws_secret_access_key = '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'
+        self.aws_region = 'us-east-1'
+
         # Load CLIP model and processor
         self.clip_model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
         self.clip_processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
@@ -41,7 +47,7 @@ class ClipBasedFrameRetriever:
         inputs = self.bert_tokenizer(query, return_tensors='pt', truncation=True, padding=True)
         query_embedding = self.bert_model(**inputs).last_hidden_state.mean(dim=1).detach().numpy()
         
-        distances, indices = self.index.search(query_embedding, top_k)
+        _, indices = self.index.search(query_embedding, top_k)
         relevant_texts = [self.corpus[i] for i in indices[0]]
         
         return relevant_texts
@@ -65,33 +71,53 @@ class ClipBasedFrameRetriever:
         image = Image.open(image_path).convert('RGB')
         return image
     
-    def get_image_from_s3(self, s3_bucket, s3_key):
-        s3 = boto3.client('s3')
+    def download_video_from_s3(self, s3_bucket, s3_key):
+        s3 = boto3.client('s3',aws_access_key_id=self.aws_access_key_id,
+            aws_secret_access_key=self.aws_secret_access_key,
+            region_name=self.aws_region)
         response = s3.get_object(Bucket=s3_bucket, Key=s3_key)
-        image_data = response['Body'].read()
-        image = Image.open(BytesIO(image_data)).convert('RGB')
-        return image
+        video_data = response['Body'].read()
+        video_path = '/tmp/temp_video.mp4'
+        with open(video_path, 'wb') as f:
+            f.write(video_data)
+        return video_path
 
+    def extract_frames_from_video(self, video_path):
+        clip = VideoFileClip(video_path)
+        frames = []
+        for frame in clip.iter_frames():
+            img = Image.fromarray(frame)
+            frames.append(img)
+        return frames
+    
+    def encode_image_to_base64(self, image):
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+        return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
-class ProcessFramesView(APIView):
-    def post(self, request):
-        s3_path = request.data.get('s3_path')
-        context = request.data.get('context')
+class ProcessFramesResource:
+    def on_post(self, req, resp):
+        data = req.media
+        s3_path = data.get('s3_path')
+        context = data.get('context')
         if not s3_path or not context:
-            return JsonResponse({"error": "s3_path and context are required"}, status=400)
+            resp.status = falcon.HTTP_400
+            resp.media = {"error": "s3_path and context are required"}
+            return
 
         retriever = ClipBasedFrameRetriever()
         s3_bucket = s3_path.split('/')[2]
-        s3_prefix = '/'.join(s3_path.split('/')[3:])
+        s3_key = '/'.join(s3_path.split('/')[3:])
 
-        # List objects in the S3 path
-        s3 = boto3.client('s3')
-        response = s3.list_objects_v2(Bucket=s3_bucket, Prefix=s3_prefix)
-        frames = [item['Key'] for item in response.get('Contents', []) if item['Key'].endswith('.jpeg')]
+        # Download and process the video
+        video_path = retriever.download_video_from_s3(s3_bucket, s3_key)
+        images = retriever.extract_frames_from_video(video_path)
 
-        images = [retriever.get_image_from_s3(s3_bucket, frame) for frame in frames]
         relevant_texts = retriever.retrieve_relevant_texts(context)
         most_similar_classes = retriever.retrieve_most_similar_class(relevant_texts, images)
 
-        result = [{"frame": frame, "most_similar_class": cls} for frame, cls in zip(frames, most_similar_classes)]
-        return JsonResponse(result, safe=False)
+        # Encode images to base64
+        encoded_images = [retriever.encode_image_to_base64(img) for img in images]
+
+        result = [{"frame": frame, "most_similar_class": cls} for frame, cls in zip(encoded_images, most_similar_classes)]
+        resp.media = result

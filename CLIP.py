@@ -10,7 +10,6 @@ import numpy as np
 import requests
 
 
-
 class CLIPModel(nn.Module):
     def __init__(self, d_e, device):
         super(CLIPModel, self).__init__()
