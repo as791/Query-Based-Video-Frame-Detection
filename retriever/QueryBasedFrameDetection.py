@@ -4,16 +4,12 @@ from transformers import CLIPProcessor, CLIPModel, BertTokenizer, BertModel
 import torch
 import faiss
 import boto3
-import os
 from PIL import Image
 import numpy as np
 import torch.nn.functional as F
 from moviepy.editor import VideoFileClip
 import pickle
 import falcon
-import base64
-
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 
 class ClipBasedFrameRetriever:
     def __init__(self):
@@ -89,11 +85,6 @@ class ClipBasedFrameRetriever:
             img = Image.fromarray(frame)
             frames.append(img)
         return frames
-    
-    def encode_image_to_base64(self, image):
-        buffered = BytesIO()
-        image.save(buffered, format="JPEG")
-        return base64.b64encode(buffered.getvalue()).decode('utf-8')
 
 class ProcessFramesResource:
     def on_post(self, req, resp):
@@ -116,8 +107,5 @@ class ProcessFramesResource:
         relevant_texts = retriever.retrieve_relevant_texts(context)
         most_similar_classes = retriever.retrieve_most_similar_class(relevant_texts, images)
 
-        # Encode images to base64
-        encoded_images = [retriever.encode_image_to_base64(img) for img in images]
-
-        result = [{"frame": frame, "most_similar_class": cls} for frame, cls in zip(encoded_images, most_similar_classes)]
+        result = [{"frame": frame, "most_similar_class": cls} for frame, cls in zip(images, most_similar_classes)]
         resp.media = result

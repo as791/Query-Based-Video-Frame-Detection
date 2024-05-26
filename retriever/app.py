@@ -1,5 +1,5 @@
 import falcon
-from QueryBasedFrameDetection import ProcessFramesResource
+from NearestFrameToContext import ProcessFramesResource
 
 app = falcon.App()
 process_frames = ProcessFramesResource()
