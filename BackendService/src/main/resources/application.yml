@@ -1,0 +1,25 @@
+spring:
+    application:
+        name: video-service
+    data:
+      mongodb:
+        uri: mongodb://host.docker.internal:27017/test
+        database: test
+    main:
+      allow-bean-definition-overriding: true
+    servlet:
+      multipart:
+        max-file-size: 10MB
+        max-request-size: 10MB
+    redis:
+      uri: redis://host.docker.internal:6379
+
+
+aws:
+  accessKey: AKIA2SQC4BMARQE46YQ6
+  secretKey: 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
+  region: us-east-1
+  maxConnections: 100
+  connectionTimeOut: 60000
+
+searchServiceUrl: http://host.docker.internal:8000/search

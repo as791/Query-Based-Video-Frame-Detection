@@ -1,0 +1,7 @@
+falcon
+boto3
+torch
+numpy
+Pillow
+transformers
+moviepy
