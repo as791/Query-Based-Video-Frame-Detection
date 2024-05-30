@@ -35,8 +35,8 @@ class ImageDataset(Dataset):
 class FrameRetriever:
     def __init__(self):
          # AWS credentials
-        self.aws_access_key_id = 'AKIA2SQC4BMAYRGKLZDH'
-        self.aws_secret_access_key = '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'
+        self.aws_access_key_id = 'access_key'
+        self.aws_secret_access_key = 'secret_key'
         self.aws_region = 'us-east-1'
 
         
