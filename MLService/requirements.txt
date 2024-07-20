@@ -5,3 +5,8 @@ numpy
 Pillow
 transformers
 moviepy
+loralib
+glob
+pickle
+openai
+openai

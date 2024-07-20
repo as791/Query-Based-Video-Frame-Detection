@@ -16,8 +16,8 @@ spring:
 
 
 aws:
-  accessKey: AKIA2SQC4BMARQE46YQ6
-  secretKey: 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
+  accessKey: <accessKey>
+  secretKey: <secretKey>
   region: us-east-1
   maxConnections: 100
   connectionTimeOut: 60000
