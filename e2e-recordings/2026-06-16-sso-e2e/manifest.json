@@ -1,0 +1,154 @@
+{
+  "title": "VideoVault SSO to End-to-End Feature Test Recording",
+  "createdAt": "2026-06-16T17:03:54.909Z",
+  "captureMode": "Chrome tab screenshots encoded into MP4",
+  "sampleVideo": "/Users/aryaman.sinha/Downloads/5977704-hd_1366_586_30fps.mp4",
+  "testedFlow": [
+    "Signed-out landing page",
+    "Google SSO account chooser",
+    "Authenticated Library page",
+    "Video upload",
+    "Async processing until Ready (3/3 chunks indexed)",
+    "Frame search for low motion",
+    "Clickable frame modal and previous-frame navigation",
+    "Ask page WebSocket connection",
+    "Fresh chat prompt and streamed assistant response"
+  ],
+  "frames": [
+    {
+      "index": 1,
+      "label": "01 signed out landing",
+      "note": "Frontend landing page before Google SSO",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/001-01-signed-out-landing.jpg",
+      "url": "http://localhost:3000/",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:58:16.712Z"
+    },
+    {
+      "index": 2,
+      "label": "02 google account chooser",
+      "note": "Google account chooser for OAuth SSO",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/002-02-google-account-chooser.jpg",
+      "url": "https://accounts.google.com/v3/signin/accountchooser?client_id=182502659788-mriu04pjc7pj6pnfv0j856ms2fqmc5eh.apps.googleusercontent.com&nonce=VMAXEf8F2gwRJDHYeGsp12wIKx354zkaXNt7iQKEv4Y&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Flogin%2Foauth2%2Fcode%2Fgoogle&response_type=code&scope=openid+profile+email&state=XEu8ES51H_SbN32WE2ly6U18-EDdYWHooc1mhzMhQak%3D&dsh=S1981341284%3A1781629106210162&o2v=2&service=lso&flowName=GeneralOAuthFlow&opparams=%253F&continue=https%3A%2F%2Faccounts.google.com%2Fsignin%2Foauth%2Fconsent%3Fauthuser%3Dunknown%26part%3DAJi8hANceUKV-Lq4zYj3bWZlwyKPRUyJUaJSgK9yTcjAborYz_JVx7iJHgzE8VJRmwJf80ZUt-i0F5vP8f4PZ8LHAz1HV_xrVXNg3sAgpUHrqDSfECXRipgtoWcKB24Ew1PH12YrZPOE49KqDQuqdQc18PA6xjrsrRtIU3a8AZDMOindgT9XVh5x67FbLNm70KAo9XVNcVDymdXa7iqmuZo-89kU7yPy2LSnZuHl3KXDGmtjcjrvrDOz9ahNB7PlJ8_PZCKrpZECfP8PBV00Z2BEmzInzEZlUurokKCXVYUQ6HiXO8NrYFTxg4M_KoZTXcui6pKom2VlbQ7xIH-6Nka46T9ysl1iivsSKBaheCpx0zHy54w245cMvkU5oONC3WkFR1nQuGxF_rEn0VZ2XuOCS_h4tB-FuFwjoW_STPb35uAC_yjptnMiZV1GU_lVI2cp0bMYpgU48SZvhlnO4WaFIQrzM7JK8Q%26flowName%3DGeneralOAuthFlow%26as%3DS1981341284%253A1781629106210162%26client_id%3D182502659788-mriu04pjc7pj6pnfv0j856ms2fqmc5eh.apps.googleusercontent.com%26requestPath%3D%252Fsignin%252Foauth%252Fconsent%23&app_domain=http%3A%2F%2Flocalhost%3A8080",
+      "title": "Sign in - Google Accounts",
+      "ts": "2026-06-16T16:58:29.802Z"
+    },
+    {
+      "index": 3,
+      "label": "03 authenticated library",
+      "note": "Authenticated Library after Google OAuth redirect",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/003-03-authenticated-library.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:58:43.207Z"
+    },
+    {
+      "index": 4,
+      "label": "04 upload started",
+      "note": "Sample video upload started",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/004-04-upload-started.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:58:56.452Z"
+    },
+    {
+      "index": 5,
+      "label": "05 processing 1",
+      "note": "normalized · 0/3 indexed · 0 failed",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/005-05-processing-1.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:59:18.666Z"
+    },
+    {
+      "index": 6,
+      "label": "05 processing 2",
+      "note": "indexing · 1/3 indexed · 0 failed",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/006-05-processing-2.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:59:28.908Z"
+    },
+    {
+      "index": 7,
+      "label": "05 processing 3",
+      "note": "Ready (3/3 chunks indexed)",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/007-05-processing-3.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:59:39.069Z"
+    },
+    {
+      "index": 8,
+      "label": "06 search query entered",
+      "note": "Search query: low motion",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/008-06-search-query-entered.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T16:59:51.373Z"
+    },
+    {
+      "index": 9,
+      "label": "07 search results",
+      "note": "High confidence frame search results returned",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/009-07-search-results.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:00:00.993Z"
+    },
+    {
+      "index": 10,
+      "label": "08 frame modal open",
+      "note": "Frame modal opened from search result",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/010-08-frame-modal-open.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:01:16.242Z"
+    },
+    {
+      "index": 11,
+      "label": "09 frame modal previous",
+      "note": "Previous frame navigation moved the modal timeline",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/011-09-frame-modal-previous.jpg",
+      "url": "http://localhost:3000/library",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:01:18.112Z"
+    },
+    {
+      "index": 12,
+      "label": "10 ask websocket connected",
+      "note": "Ask page with WebSocket connected",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/012-10-ask-websocket-connected.jpg",
+      "url": "http://localhost:3000/ask",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:02:53.544Z"
+    },
+    {
+      "index": 13,
+      "label": "11 chat prompt entered",
+      "note": "Chat prompt: summarize low motion",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/013-11-chat-prompt-entered.jpg",
+      "url": "http://localhost:3000/ask",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:02:54.229Z"
+    },
+    {
+      "index": 14,
+      "label": "12 chat streaming",
+      "note": "Assistant response streaming over WebSocket",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/014-12-chat-streaming.jpg",
+      "url": "http://localhost:3000/ask",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:02:59.927Z"
+    },
+    {
+      "index": 15,
+      "label": "13 chat completed",
+      "note": "Assistant response completed and input reset",
+      "file": "/var/folders/pg/zy40m_993gv8f_mys08qnf3w0000gn/T/videovault-sso-e2e-1781629023365/frames/015-13-chat-completed.jpg",
+      "url": "http://localhost:3000/ask",
+      "title": "VideoVault",
+      "ts": "2026-06-16T17:03:18.056Z"
+    }
+  ]
+}

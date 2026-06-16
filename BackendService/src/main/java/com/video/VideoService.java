@@ -1,7 +1,5 @@
 package com.video;
 
-import static org.mockito.Mockito.reset;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -97,7 +95,7 @@ public class VideoService {
 
   private SearchOutputLinks convertToS3PresignUrls(List<SearchOutput> searchOutputs) {
     return new SearchOutputLinks(searchOutputs.stream()
-        .map(out -> s3Client.generatePresignedUrl(out.getFrame().getBucket(), out.getFrame().getKey(),1).toString())
+        .map(out -> s3Client.generatePresignedUrl(out.getFrame().getBucket(), out.getFrame().getKey(), 10).toString())
         .toList());
   }
 

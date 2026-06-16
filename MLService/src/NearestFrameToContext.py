@@ -32,18 +32,8 @@ class ImageDataset(Dataset):
 
 class FrameRetriever:
     def __init__(self):
-         # AWS credentials
-        self.aws_access_key_id = 'key'
-        self.aws_secret_access_key = 'secret'
-        self.aws_region = 'us-east-1'
-
-        # S3 client
-        self.s3 = boto3.client(
-            's3',
-            aws_access_key_id=self.aws_access_key_id,
-            aws_secret_access_key=self.aws_secret_access_key,
-            region_name=self.aws_region
-        )
+        # S3 client (credentials from env vars, IAM role, or ~/.aws/credentials)
+        self.s3 = boto3.client('s3', region_name=os.environ.get('AWS_REGION', 'us-east-1'))
 
         # Determine device (GPU if available, otherwise CPU)
         if torch.cuda.is_available():

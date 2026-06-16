@@ -1,18 +1,26 @@
-# Use an official Python runtime as a parent image
-FROM python:3.12
+FROM python:3.11-slim
 
-# Set the working directory in the container
-WORKDIR /usr/src/app/
+WORKDIR /usr/src/app
 
-# Copy the current directory contents into the container at /usr/src/app
-COPY ./src .
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    libgl1 \
+    libglib2.0-0 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install any needed packages specified in requirements.txt
 COPY requirements.txt .
+
+RUN pip3 install --upgrade pip setuptools wheel
+
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Make port 8000 available to the world outside this container
+COPY ./src .
+
 EXPOSE 8000
 
-# Run app.py when the container launches
-ENTRYPOINT ["python3", "app.py", "--server.port=8000"]
+ENTRYPOINT ["python3", "app.py"]

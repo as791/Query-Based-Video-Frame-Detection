@@ -1,14 +1,23 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17
+# ── Build stage ──────────────────────────────────────────────────────────────
+FROM maven:3.9-eclipse-temurin-17 AS builder
 
-# Set the working directory in the container
+WORKDIR /build
+
+# Copy pom first to cache dependency downloads
+COPY pom.xml ./
+RUN mvn -B dependency:go-offline
+
+# Copy sources and build
+COPY src ./src
+RUN mvn -B clean package -Dmaven.test.skip=true
+
+# ── Runtime stage ────────────────────────────────────────────────────────────
+FROM eclipse-temurin:17-jre
+
 WORKDIR /usr/src/app
 
-# Copy the built JAR file into the container
-COPY ./target/video-service-1.0.0.jar ./app.jar
+COPY --from=builder /build/target/video-service-1.0.0.jar ./app.jar
 
-# Expose port 8080 (or the port your application uses)
 EXPOSE 8080
 
-# Run the application
 ENTRYPOINT ["java", "-Xmx2G", "-Xms1G", "-jar", "app.jar"]

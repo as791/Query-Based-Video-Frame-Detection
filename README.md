@@ -307,9 +307,18 @@ Query-Based-Video-Frame-Detection/
 
 ---
 
-## 6. Pointers
+## 6. Benchmarking
+
+End-to-end benchmarks (ingest throughput, per-stage latency, search
+recall/mAP, chat TTFT) run against the
+[Kaggle CCTV Action Recognition dataset](https://www.kaggle.com/datasets/jonathannield/cctv-action-recognition-dataset).
+See [`docs/benchmarking.md`](docs/benchmarking.md) for the metric
+definitions, run layout, and regression rules.
+
+## 7. Pointers
 
 - Architecture, rationale, open questions → [`docs/architecture.md`](docs/architecture.md)
+- Benchmarking methodology → [`docs/benchmarking.md`](docs/benchmarking.md)
 - Latest E2E capture → [`e2e-recordings/2026-06-16-sso-e2e/`](e2e-recordings/2026-06-16-sso-e2e/)
 - Smoke/integration tests → [`tests/smoke_test.sh`](tests/smoke_test.sh), [`tests/test_pipeline.py`](tests/test_pipeline.py)
 - Compose environment template → [`compose/.env.example`](compose/.env.example)

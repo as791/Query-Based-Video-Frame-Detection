@@ -30,6 +30,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.bgee.log4jdbc-log4j2</groupId>
             <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
             <version>${log4jdbc.log4j2.version}</version>
@@ -38,12 +42,19 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.redisson</groupId>
-            <artifactId>redisson-spring-data-25</artifactId>
-            <version>3.16.4</version>
+            <artifactId>redisson-spring-data-31</artifactId>
+            <version>3.27.2</version>
         </dependency>
 
         <dependency>
@@ -84,6 +95,42 @@
 <!--            <artifactId>lombok</artifactId>-->
 <!--            <version>${lombok.version}</version>-->
 <!--        </dependency>-->
+
+        <!-- Google OAuth2 via Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+
+        <!-- PostgreSQL (users + sessions) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Session persistence in PostgreSQL -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
+        </dependency>
+
+        <!-- Spring Security -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- AWS KMS -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-kms</artifactId>
+            <version>1.11.615</version>
+        </dependency>
 
     </dependencies>
     <build>

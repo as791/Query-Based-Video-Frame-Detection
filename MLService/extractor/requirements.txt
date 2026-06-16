@@ -1,0 +1,6 @@
+redis==5.0.8
+boto3==1.35.0
+qdrant-client==1.9.1
+requests==2.32.3
+Pillow==10.4.0
+ffmpeg-python==0.2.0

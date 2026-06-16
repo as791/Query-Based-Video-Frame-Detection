@@ -14,12 +14,14 @@ import org.springframework.context.annotation.Configuration;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Primary;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
@@ -46,15 +48,51 @@ public class AppConfig {
     @Value("${spring.redis.uri}")
     private String redisConnectionUri;
 
+    @Value("${AWS_S3_ENDPOINT:#{null}}")
+    private String s3Endpoint;
+
 
     @Bean
-    public AmazonS3 sClient(){
-      return AmazonS3ClientBuilder.standard()
-            .withClientConfiguration(new ClientConfiguration().withMaxConnections(maxConnections)
-                    .withConnectionTimeout(connectionTimeOut))
-            .withRegion(region)
-            .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-            .build();
+    public AmazonS3 sClient() {
+        AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard()
+                .withClientConfiguration(new ClientConfiguration()
+                        .withMaxConnections(maxConnections)
+                        .withConnectionTimeout(connectionTimeOut));
+        if (accessKey != null && !accessKey.isBlank() && secretKey != null && !secretKey.isBlank()) {
+            builder.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)));
+        } else {
+            builder.withCredentials(new DefaultAWSCredentialsProviderChain());
+        }
+        if (s3Endpoint != null && !s3Endpoint.isBlank()) {
+            builder.withEndpointConfiguration(
+                    new com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration(s3Endpoint, region))
+                   .withPathStyleAccessEnabled(true);
+        } else {
+            builder.withRegion(region);
+        }
+        return builder.build();
+    }
+
+    @Bean
+    public org.springframework.web.servlet.config.annotation.WebMvcConfigurer corsConfigurer(
+            @Value("${FRONTEND_ORIGIN:http://localhost:3000}") String frontendOrigin) {
+        return new org.springframework.web.servlet.config.annotation.WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOriginPatterns(frontendOrigin, "http://localhost:*", "http://127.0.0.1:*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .exposedHeaders("Location", "ETag")
+                        .allowCredentials(true)
+                        .maxAge(3600);
+            }
+        };
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
     @Bean

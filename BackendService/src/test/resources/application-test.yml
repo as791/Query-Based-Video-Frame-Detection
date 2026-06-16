@@ -1,0 +1,31 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/videovault-test
+  datasource:
+    url: jdbc:postgresql://localhost:5432/videovault
+    username: videovault
+    password: videovault
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+  session:
+    store-type: none
+
+aws:
+  accessKey: minioadmin
+  secretKey: minioadmin
+  region: us-east-1
+
+embedder:
+  url: http://localhost:8002
+
+qdrant:
+  url: http://localhost:6333
+
+vlm:
+  url: http://localhost:8001
