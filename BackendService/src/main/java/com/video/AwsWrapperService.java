@@ -68,10 +68,10 @@ public class AwsWrapperService {
         return objectListing.getObjectSummaries();
     }
 
-    public URL generatePresignedUrl(String bucketName, String key, int expirationHour){
+    public URL generatePresignedUrl(String bucketName, String key, int expirationMinutes){
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * expirationHour; // Add expirationHour hour
+        expTimeMillis += 1000L * 60 * expirationMinutes;
         expiration.setTime(expTimeMillis);
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucketName, key)
                                                                     .withExpiration(expiration);

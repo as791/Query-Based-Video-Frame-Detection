@@ -1,0 +1,571 @@
+import base64
+import json
+import os
+import re
+import subprocess
+import tempfile
+import time
+import uuid
+from io import BytesIO
+from pathlib import Path
+
+import boto3
+import redis
+import requests
+from botocore.config import Config
+from PIL import Image
+from qdrant_client import QdrantClient
+from qdrant_client.models import PointStruct
+
+S3_CLIENT_CONFIG = Config(
+    connect_timeout=10,
+    read_timeout=60,
+    retries={"max_attempts": 5, "mode": "standard"},
+    max_pool_connections=10,
+)
+
+REDIS_URI = os.environ.get("REDIS_URI", "redis://redis:6379")
+S3_ENDPOINT = os.environ.get("AWS_S3_ENDPOINT")
+AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
+S3_BUCKET = os.environ.get("S3_BUCKET", os.environ.get("MINIO_BUCKET", "video-vault"))
+EMBEDDER_URL = os.environ.get("EMBEDDER_URL", "http://embedder:8002")
+VLM_URL = os.environ.get("VLM_URL", "http://host.docker.internal:11434")
+VLM_MODEL = os.environ.get("VLM_MODEL", "qwen2.5vl:7b")
+QDRANT_HOST = os.environ.get("QDRANT_HOST", "qdrant")
+STREAM = "pipeline.events"
+GROUP = "cg-extractor"
+CONSUMER = f"extractor-{uuid.uuid4().hex[:8]}"
+FPS_GENERAL = 0.5   # 1 frame per 2s
+FPS_CCTV = 1.0      # 1 frame per 1s
+VLM_TIMEOUT_SEC = float(os.environ.get("VLM_TIMEOUT_SEC", "3"))
+PENDING_IDLE_MS = 60_000
+STOP_WORDS = {
+    "the", "and", "for", "with", "from", "that", "this", "there", "their", "into",
+    "near", "over", "under", "while", "video", "frame", "scene", "shows", "showing",
+    "chunk", "segment", "person", "people", "image", "camera", "view",
+}
+
+
+def s3_client():
+    return boto3.client("s3", endpoint_url=S3_ENDPOINT, region_name=AWS_REGION,
+                        config=S3_CLIENT_CONFIG)
+
+
+def redis_client():
+    return redis.from_url(REDIS_URI, decode_responses=True)
+
+
+def qdrant_client():
+    return QdrantClient(host=QDRANT_HOST, port=6333)
+
+
+def emit_status(r, video_id, stage, **fields):
+    payload = {"stage": stage}
+    payload.update({k: str(v) for k, v in fields.items() if v is not None})
+    r.xadd(f"ui.status.{video_id}", payload)
+
+
+def tail(text, limit=1800):
+    text = text or ""
+    return text[-limit:]
+
+
+def clamp(value, low=0.0, high=1.0):
+    return max(low, min(high, value))
+
+
+def parse_float(value, default=0.0):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def ffprobe_metadata(video_path):
+    try:
+        proc = subprocess.run([
+            "ffprobe", "-v", "error",
+            "-print_format", "json",
+            "-show_format",
+            "-show_streams",
+            video_path,
+        ], capture_output=True, text=True, check=True, timeout=30)
+        raw = json.loads(proc.stdout or "{}")
+        fmt = raw.get("format", {}) or {}
+        video_stream = next((s for s in raw.get("streams", []) if s.get("codec_type") == "video"), {})
+        fps = 0.0
+        rate = video_stream.get("avg_frame_rate") or video_stream.get("r_frame_rate") or ""
+        if "/" in rate:
+            numerator, denominator = rate.split("/", 1)
+            denom = parse_float(denominator, 1.0) or 1.0
+            fps = parse_float(numerator) / denom
+        else:
+            fps = parse_float(rate)
+        duration = parse_float(video_stream.get("duration")) or parse_float(fmt.get("duration"))
+        return {
+            "duration_ms": int(duration * 1000),
+            "width": int(parse_float(video_stream.get("width"))),
+            "height": int(parse_float(video_stream.get("height"))),
+            "fps": round(fps, 3),
+            "codec": str(video_stream.get("codec_name") or ""),
+            "format": str(fmt.get("format_name") or ""),
+        }
+    except Exception as e:
+        print(f"[extractor] ffprobe metadata failed: {e}")
+        return {
+            "duration_ms": 0,
+            "width": 0,
+            "height": 0,
+            "fps": 0,
+            "codec": "",
+            "format": "",
+        }
+
+
+def keyword_tags(text, limit=10):
+    words = re.findall(r"[a-zA-Z][a-zA-Z0-9_-]{2,}", (text or "").lower())
+    tags = []
+    for word in words:
+        if word in STOP_WORDS or word in tags:
+            continue
+        tags.append(word)
+        if len(tags) >= limit:
+            break
+    return tags
+
+
+def estimate_motion(frames):
+    if len(frames) < 2:
+        return 0.0, "unknown motion"
+    diffs = []
+    previous = None
+    for _, _, _, img, _ in frames[:12]:
+        gray = img.resize((64, 36)).convert("L")
+        pixels = list(gray.getdata())
+        if previous is not None:
+            diff = sum(abs(a - b) for a, b in zip(previous, pixels)) / (255 * len(pixels))
+            diffs.append(diff)
+        previous = pixels
+    score = clamp(sum(diffs) / len(diffs) if diffs else 0.0)
+    if score >= 0.22:
+        label = "high motion"
+    elif score >= 0.1:
+        label = "moderate motion"
+    elif score >= 0.035:
+        label = "low motion"
+    else:
+        label = "mostly static"
+    return round(score, 4), label
+
+
+def extract_json_object(text):
+    text = (text or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```(?:json)?\s*", "", text)
+        text = re.sub(r"\s*```$", "", text)
+    start = text.find("{")
+    end = text.rfind("}")
+    if start >= 0 and end > start:
+        text = text[start:end + 1]
+    return json.loads(text)
+
+
+def clean_list(value, limit=12):
+    if isinstance(value, str):
+        value = re.split(r"[,;\n]", value)
+    if not isinstance(value, list):
+        return []
+    cleaned = []
+    for item in value:
+        item = str(item).strip().lower()
+        if item and item not in cleaned:
+            cleaned.append(item)
+        if len(cleaned) >= limit:
+            break
+    return cleaned
+
+
+def normalize_analysis(value, fallback):
+    if not isinstance(value, dict):
+        value = {}
+    caption = str(value.get("caption") or fallback.get("caption") or "").strip()
+    main_activity = str(value.get("main_activity") or fallback.get("main_activity") or "").strip()
+    scene = str(value.get("scene") or fallback.get("scene") or "").strip()
+    motion = str(value.get("motion") or fallback.get("motion") or "").strip()
+    tags = clean_list(value.get("tags")) or fallback.get("tags", [])
+    objects = clean_list(value.get("objects")) or fallback.get("objects", [])
+    confidence = clamp(parse_float(value.get("confidence"), fallback.get("confidence", 0.35)))
+    return {
+        "caption": caption,
+        "main_activity": main_activity,
+        "tags": clean_list(tags),
+        "objects": clean_list(objects),
+        "scene": scene,
+        "motion": motion,
+        "confidence": round(confidence, 3),
+    }
+
+
+def parse_metadata_json(value):
+    try:
+        parsed = json.loads(value or "{}")
+        return parsed if isinstance(parsed, dict) else {}
+    except Exception:
+        return {}
+
+
+def extract_frames(video_path, fps, start_ms):
+    """Return list of (frame_id, absolute_t_ms, chunk_t_ms, PIL.Image)."""
+    out_dir = Path(video_path).parent / "frames"
+    out_dir.mkdir(exist_ok=True)
+    subprocess.run([
+        "ffmpeg", "-y", "-i", video_path,
+        "-vf", f"fps={fps}",
+        "-q:v", "2",
+        str(out_dir / "%05d.jpg"),
+    ], check=True, capture_output=True)
+    frames = []
+    for i, f in enumerate(sorted(out_dir.glob("*.jpg"))):
+        chunk_t_ms = int(i * (1000 / fps))
+        t_ms = start_ms + chunk_t_ms
+        img = Image.open(f).convert("RGB")
+        frames.append((str(uuid.uuid4()), t_ms, chunk_t_ms, img, str(f)))
+    return frames
+
+
+def image_to_b64(img):
+    buf = BytesIO()
+    img.save(buf, format="JPEG")
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+def embed_images(images):
+    resp = requests.post(
+        f"{EMBEDDER_URL}/embed/images",
+        json={"images": [image_to_b64(img) for img in images]},
+        timeout=120,
+    )
+    resp.raise_for_status()
+    return resp.json()["embeddings"]
+
+
+def caption_chunk(s3, s3_thumb_path):
+    """Download the thumbnail from S3, send it to the VLM as image content,
+    return a caption. Returns empty string on any failure (caption is optional)."""
+    try:
+        # Fetch thumbnail bytes from S3
+        buf = BytesIO()
+        s3.download_fileobj(S3_BUCKET, s3_thumb_path, buf)
+        img_b64 = base64.b64encode(buf.getvalue()).decode()
+        data_url = f"data:image/jpeg;base64,{img_b64}"
+
+        resp = requests.post(
+            f"{VLM_URL}/v1/chat/completions",
+            json={
+                "model": VLM_MODEL,
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Describe this video scene briefly in one sentence."},
+                        {"type": "image_url", "image_url": {"url": data_url}},
+                    ],
+                }],
+                "max_tokens": 128,
+                "stream": False,
+            },
+            timeout=120,
+        )
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"].strip()
+    except Exception as e:
+        print(f"[extractor] caption_chunk failed: {e}")
+        return ""
+
+
+def analyze_chunk(s3, s3_thumb_path, profile, video_metadata, source_file, motion_label, motion_score):
+    fallback_caption = f"{motion_label} {profile} video segment".strip()
+    fallback_tags = clean_list([profile, motion_label.replace(" ", "-"), "video"])
+    fallback = {
+        "caption": fallback_caption,
+        "main_activity": motion_label,
+        "tags": fallback_tags,
+        "objects": [],
+        "scene": profile,
+        "motion": motion_label,
+        "confidence": 0.35 + min(0.2, motion_score),
+    }
+    try:
+        buf = BytesIO()
+        s3.download_fileobj(S3_BUCKET, s3_thumb_path, buf)
+        img_b64 = base64.b64encode(buf.getvalue()).decode()
+        data_url = f"data:image/jpeg;base64,{img_b64}"
+        prompt = (
+            "Analyze this representative video frame for retrieval. "
+            "Return strict JSON only with keys: caption, main_activity, tags, objects, scene, motion, confidence. "
+            "tags and objects must be short lowercase arrays. confidence must be 0 to 1. "
+            f"Known metadata: profile={profile}, source_file={source_file or 'unknown'}, "
+            f"duration_ms={video_metadata.get('duration_ms', 0)}, "
+            f"resolution={video_metadata.get('width', 0)}x{video_metadata.get('height', 0)}, "
+            f"estimated_motion={motion_label}."
+        )
+        resp = requests.post(
+            f"{VLM_URL}/v1/chat/completions",
+            json={
+                "model": VLM_MODEL,
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": data_url}},
+                    ],
+                }],
+                "max_tokens": 180,
+                "temperature": 0,
+                "stream": False,
+            },
+            timeout=VLM_TIMEOUT_SEC,
+        )
+        resp.raise_for_status()
+        content = resp.json()["choices"][0]["message"]["content"]
+        analysis = normalize_analysis(extract_json_object(content), fallback)
+        if not analysis["tags"]:
+            analysis["tags"] = keyword_tags(" ".join([
+                analysis["caption"], analysis["main_activity"], analysis["scene"], analysis["motion"],
+            ]))
+        return analysis
+    except Exception as e:
+        print(f"[extractor] analyze_chunk fallback: {e}")
+        fallback["tags"] = clean_list(fallback["tags"] + keyword_tags(f"{source_file or ''} {fallback_caption}"))
+        return normalize_analysis(fallback, fallback)
+
+
+def mean_vector(vectors):
+    n = len(vectors)
+    dim = len(vectors[0])
+    mean = [sum(v[i] for v in vectors) / n for i in range(dim)]
+    norm = sum(x * x for x in mean) ** 0.5 or 1.0
+    return [x / norm for x in mean]
+
+
+def process(msg_id, data, s3, r, qdrant):
+    event_type = data.get("type")
+    if event_type == "chunk.failed":
+        r.xack(STREAM, GROUP, msg_id)
+        return
+    if event_type not in ("chunk.normalized", "video.normalized"):
+        r.xack(STREAM, GROUP, msg_id)
+        return
+
+    video_id = data["video_id"]
+    user_id = data["user_id"]
+    tenant_id = data.get("tenant_id", "default")
+    profile = data.get("profile", "general")
+    chunk_id = data["chunk_id"]
+    t_start_ms = int(data["t_start_ms"])
+    t_end_ms = int(data["t_end_ms"])
+    s3_processed_path = data["s3_processed_path"]
+    s3_thumb_path = data["s3_thumb_path"]
+    source_file = data.get("source_file") or data.get("file_name") or "original.mp4"
+    original_video_metadata = parse_metadata_json(data.get("video_metadata_json", "{}"))
+
+    fps = FPS_CCTV if profile == "cctv" else FPS_GENERAL
+    emit_status(
+        r, video_id, "indexing",
+        chunk_id=chunk_id, chunk_index=data.get("chunk_index", ""),
+        chunk_count=data.get("chunk_count", ""), t_start_ms=t_start_ms, t_end_ms=t_end_ms,
+    )
+
+    try:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            chunk_file = str(Path(tmpdir) / "chunk.mp4")
+            s3.download_file(S3_BUCKET, s3_processed_path, chunk_file)
+
+            frames = extract_frames(chunk_file, fps, t_start_ms)
+            if not frames:
+                raise RuntimeError("no frames extracted")
+            chunk_metadata = ffprobe_metadata(chunk_file)
+            video_metadata = dict(original_video_metadata)
+            video_metadata["source_file"] = source_file
+            video_metadata["profile"] = profile
+            video_metadata["chunk_duration_ms"] = chunk_metadata.get("duration_ms", 0)
+            video_metadata["processed_width"] = chunk_metadata.get("width", 0)
+            video_metadata["processed_height"] = chunk_metadata.get("height", 0)
+            video_metadata["processed_fps"] = chunk_metadata.get("fps", 0)
+            motion_score, motion_label = estimate_motion(frames)
+
+            frame_ids, frame_t_ms, frame_chunk_t_ms, frame_images, frame_paths = zip(*frames)
+
+            # Embed all frames in one batch
+            embeddings = embed_images(list(frame_images))
+
+            # Upload frames to S3
+            frame_s3_keys = []
+            for fid, fpath in zip(frame_ids, frame_paths):
+                key = f"frames/{tenant_id}/{user_id}/{video_id}/{chunk_id}/{fid}.jpg"
+                s3.upload_file(fpath, S3_BUCKET, key)
+                frame_s3_keys.append(key)
+
+        analysis = analyze_chunk(s3, s3_thumb_path, profile, video_metadata, source_file, motion_label, motion_score)
+        caption = analysis["caption"]
+        tags = clean_list(analysis.get("tags", []) + keyword_tags(f"{source_file} {caption} {analysis.get('main_activity', '')}"))
+        objects = clean_list(analysis.get("objects", []))
+
+        # Chunk embedding = mean of frame embeddings
+        chunk_vector = mean_vector(embeddings)
+
+        # Write chunk to Qdrant
+        qdrant.upsert(
+            collection_name="chunks",
+            points=[PointStruct(
+                id=str(uuid.uuid4()),
+                vector=chunk_vector,
+                payload={
+                    "user_id": user_id,
+                    "tenant_id": tenant_id,
+                    "video_id": video_id,
+                    "chunk_id": chunk_id,
+                    "t_start_ms": t_start_ms,
+                    "t_end_ms": t_end_ms,
+                    "s3_chunk_path": s3_processed_path,
+                    "s3_thumb_path": s3_thumb_path,
+                    "caption": caption,
+                    "main_activity": analysis["main_activity"],
+                    "tags": tags,
+                    "objects": objects,
+                    "scene": analysis["scene"],
+                    "motion": analysis["motion"],
+                    "analysis_confidence": analysis["confidence"],
+                    "motion_score": motion_score,
+                    "source_file": source_file,
+                    "video_metadata": video_metadata,
+                    "chunk_metadata": chunk_metadata,
+                    "duration_ms": video_metadata.get("duration_ms", 0),
+                    "width": video_metadata.get("width", 0),
+                    "height": video_metadata.get("height", 0),
+                    "fps": video_metadata.get("fps", 0),
+                    "profile": profile,
+                },
+            )],
+        )
+
+        # Write frames to Qdrant
+        frame_points = [
+            PointStruct(
+                id=str(uuid.uuid4()),
+                vector=emb,
+                payload={
+                    "user_id": user_id,
+                    "tenant_id": tenant_id,
+                    "video_id": video_id,
+                    "chunk_id": chunk_id,
+                    "frame_id": fid,
+                    "t_ms": t_ms,
+                    "t_chunk_ms": chunk_t_ms,
+                    "s3_frame_path": s3_key,
+                    "caption": caption,
+                    "main_activity": analysis["main_activity"],
+                    "tags": tags,
+                    "objects": objects,
+                    "scene": analysis["scene"],
+                    "motion": analysis["motion"],
+                    "analysis_confidence": analysis["confidence"],
+                    "motion_score": motion_score,
+                    "source_file": source_file,
+                    "video_metadata": video_metadata,
+                    "chunk_metadata": chunk_metadata,
+                    "duration_ms": video_metadata.get("duration_ms", 0),
+                    "width": video_metadata.get("width", 0),
+                    "height": video_metadata.get("height", 0),
+                    "fps": video_metadata.get("fps", 0),
+                    "profile": profile,
+                },
+            )
+            for fid, t_ms, chunk_t_ms, emb, s3_key in zip(frame_ids, frame_t_ms, frame_chunk_t_ms, embeddings, frame_s3_keys)
+        ]
+        qdrant.upsert(collection_name="frames", points=frame_points)
+
+        r.xadd(STREAM, {
+            "type": "chunk.indexed",
+            "video_id": video_id,
+            "user_id": user_id,
+            "tenant_id": tenant_id,
+            "chunk_id": chunk_id,
+            "chunk_index": str(data.get("chunk_index", "")),
+            "chunk_count": str(data.get("chunk_count", "")),
+        })
+        emit_status(
+            r, video_id, "indexed",
+            chunk_id=chunk_id, chunk_index=data.get("chunk_index", ""),
+            chunk_count=data.get("chunk_count", ""), frame_count=len(frames),
+        )
+        print(f"[extractor] {video_id}/{chunk_id}: {len(frames)} frames indexed")
+    except Exception as e:
+        error = tail(str(e))
+        r.xadd(STREAM, {
+            "type": "chunk.failed",
+            "video_id": video_id,
+            "user_id": user_id,
+            "tenant_id": tenant_id,
+            "profile": profile,
+            "chunk_id": chunk_id,
+            "chunk_index": str(data.get("chunk_index", "")),
+            "chunk_count": str(data.get("chunk_count", "")),
+            "stage": "extractor",
+            "error": error,
+        })
+        emit_status(
+            r, video_id, "failed",
+            stage_detail="extractor", chunk_id=chunk_id,
+            chunk_index=data.get("chunk_index", ""), chunk_count=data.get("chunk_count", ""),
+            error=error,
+        )
+        print(f"[extractor] {video_id}/{chunk_id}: failed {tail(error, 300)}")
+
+    r.xack(STREAM, GROUP, msg_id)
+
+
+def claim_stale(r):
+    try:
+        claimed = r.xautoclaim(STREAM, GROUP, CONSUMER, min_idle_time=PENDING_IDLE_MS, start_id="0-0", count=5)
+        return claimed[1] if isinstance(claimed, tuple) and len(claimed) > 1 else []
+    except Exception:
+        return []
+
+
+def main():
+    r = redis_client()
+    s3 = s3_client()
+    qdrant = qdrant_client()
+    try:
+        r.xgroup_create(STREAM, GROUP, id="0", mkstream=True)
+    except redis.exceptions.ResponseError:
+        pass
+
+    print(f"[extractor] listening as {CONSUMER}")
+    while True:
+        for msg_id, data in claim_stale(r):
+            try:
+                process(msg_id, data, s3, r, qdrant)
+            except Exception as e:
+                print(f"[extractor] stale error on {msg_id}: {e}")
+                r.xadd(STREAM, {"type": "chunk.failed", "video_id": data.get("video_id", ""), "chunk_id": data.get("chunk_id", ""), "stage": "extractor", "error": str(e)})
+                emit_status(r, data.get("video_id", ""), "failed", stage_detail="extractor", chunk_id=data.get("chunk_id", ""), error=str(e))
+                r.xack(STREAM, GROUP, msg_id)
+
+        messages = r.xreadgroup(GROUP, CONSUMER, {STREAM: ">"}, count=1, block=5000)
+        if not messages:
+            continue
+        for _, entries in messages:
+            for msg_id, data in entries:
+                try:
+                    process(msg_id, data, s3, r, qdrant)
+                except Exception as e:
+                    print(f"[extractor] error on {msg_id}: {e}")
+                    r.xadd(STREAM, {"type": "chunk.failed", "video_id": data.get("video_id", ""), "chunk_id": data.get("chunk_id", ""), "stage": "extractor", "error": str(e)})
+                    emit_status(r, data.get("video_id", ""), "failed", stage_detail="extractor", chunk_id=data.get("chunk_id", ""), error=str(e))
+                    r.xack(STREAM, GROUP, msg_id)
+
+
+if __name__ == "__main__":
+    time.sleep(10)  # wait for embedder + qdrant
+    main()

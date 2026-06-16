@@ -10,6 +10,6 @@ app.add_route('/search', process_frames)
 
 if __name__ == '__main__':
     print(datetime.now(),"started the App")
-    httpd = simple_server.make_server('localhost', 8000, app)
+    httpd = simple_server.make_server('0.0.0.0', 8000, app)
     httpd.serve_forever()
     
