@@ -1,0 +1,67 @@
+title = "VideoVault gitleaks config"
+
+# Inherit gitleaks' default rule set, then add provider rules tailored to
+# this repo (HF tokens, the AWS key formats we have leaked before).
+[extend]
+useDefault = true
+
+# ── Custom rules ────────────────────────────────────────────────────────────
+
+[[rules]]
+id = "huggingface-user-access-token"
+description = "Hugging Face user access token (hf_<37 chars>)"
+regex = '''\bhf_[A-Za-z0-9]{30,}\b'''
+tags = ["secret", "huggingface", "token"]
+
+[[rules]]
+id = "huggingface-org-token"
+description = "Hugging Face org token (hf_org_<...>)"
+regex = '''\bhf_org_[A-Za-z0-9]{30,}\b'''
+tags = ["secret", "huggingface", "token"]
+
+[[rules]]
+id = "aws-access-key-id-strict"
+description = "AWS access key ID (AKIA/ASIA/AROA/AIDA prefix)"
+regex = '''\b(?:AKIA|ASIA|AROA|AIDA)[0-9A-Z]{16}\b'''
+tags = ["secret", "aws", "key"]
+
+[[rules]]
+id = "aws-secret-access-key-assignment"
+description = "AWS secret access key assignment (40-char base64-ish near an aws_secret hint)"
+regex = '''(?i)aws[_\-]?secret[_\-]?access[_\-]?key["'\s:=]{1,5}[A-Za-z0-9/+]{40}'''
+tags = ["secret", "aws", "key"]
+
+[[rules]]
+id = "google-oauth-client-secret"
+description = "Google OAuth client secret (GOCSPX-<...>)"
+regex = '''\bGOCSPX-[A-Za-z0-9_\-]{20,}\b'''
+tags = ["secret", "google", "oauth"]
+
+# ── Allowlist (false-positive suppression, not real secret allowlisting) ──
+
+[allowlist]
+description = "Paths and patterns the scanner should ignore"
+paths = [
+  '''(^|/)\.gitleaks\.toml$''',          # this file
+  '''(^|/)\.github/workflows/gitleaks''',  # CI definition references the rules
+  '''(^|/)README\.md$''',                # docs that may quote example shapes
+  '''(^|/)docs/''',                      # design docs may show example token shapes
+  '''(^|/)\.env\.example$''',
+  '''(^|/).*\.env\.example$''',
+  '''node_modules/''',
+  '''package-lock\.json$''',
+  '''graphify-out/''',
+  '''tests/bench/data/''',               # downloaded dataset
+  '''tests/bench/runs/''',               # local benchmark outputs
+]
+
+# Well-known non-secret placeholders we never want to flag.
+regexes = [
+  '''your-aws-access-key-id''',
+  '''your-aws-secret-access-key''',
+  '''your-google-oauth2-client-secret''',
+  '''minioadmin''',                      # MinIO well-known local-dev default
+  '''videovault''',                      # local POSTGRES_PASSWORD default
+  '''AKIAIOSFODNN7EXAMPLE''',            # AWS docs canonical example
+  '''wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY''',  # AWS docs canonical example
+]

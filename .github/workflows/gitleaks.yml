@@ -1,0 +1,33 @@
+name: gitleaks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 3 * * 1"  # weekly full-history sweep (Mondays 03:17 UTC)
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: scan for leaked secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history is required so the scanner can audit every commit on PRs
+          # and on the weekly cron sweep, not just the diff.
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: .gitleaks.toml
+          # Fail the job on any finding; report (SARIF) is uploaded to the
+          # Code Scanning tab so reviewers can see redacted matches inline.
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
+          GITLEAKS_ENABLE_SUMMARY: "true"
