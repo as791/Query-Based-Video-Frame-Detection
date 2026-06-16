@@ -1,0 +1,29 @@
+# GPU override — use with: docker compose -f docker-compose.yml -f docker-compose.gpu.yml up
+# Shares the GPU between extractor and vlm (single-GPU dev mode).
+services:
+  extractor:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  vlm:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  embedder:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

@@ -1,0 +1,207 @@
+services:
+
+  # ── Infrastructure ────────────────────────────────────────────────────────
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: videovault
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+
+  # ── Init services ─────────────────────────────────────────────────────────
+
+  qdrant-init:
+    image: python:3.12-slim
+    depends_on:
+      - qdrant
+    command: >
+      sh -c "pip install --quiet qdrant-client==1.9.1 &&
+             python /init/qdrant-init.py"
+    volumes:
+      - ./init/qdrant-init.py:/init/qdrant-init.py:ro
+    networks:
+      - internal
+    restart: on-failure
+
+  redis-init:
+    image: redis:7-alpine
+    depends_on:
+      - redis
+    entrypoint: ["/bin/sh", "/init/redis-init.sh"]
+    volumes:
+      - ./init/redis-init.sh:/init/redis-init.sh:ro
+    networks:
+      - internal
+    restart: on-failure
+
+  # ── Application services ──────────────────────────────────────────────────
+
+  api:
+    build:
+      context: ../BackendService
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      SPRING_DATA_MONGODB_URI: ${MONGO_URI}
+      SPRING_REDIS_URI: ${REDIS_URI}
+      EMBEDDER_URL: http://embedder:8002
+      QDRANT_URL: http://qdrant:6333
+      VLM_URL: ${VLM_URL:-http://host.docker.internal:11434}
+      VLM_MODEL: ${VLM_MODEL:-qwen2.5vl:7b}
+      FRONTEND_ORIGIN: http://localhost:3000
+    ports:
+      - "8080:8080"
+    extra_hosts:
+      # Make host.docker.internal resolve on Linux (already works on Mac/Windows)
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    depends_on:
+      - mongo
+      - redis
+      - postgres
+      - qdrant-init
+      - redis-init
+      - embedder
+    networks:
+      - internal
+      - public
+
+  mlservice:
+    build:
+      context: ../MLService
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - internal
+
+  web:
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+      API_URL: http://api:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - public
+
+  chunker:
+    build:
+      context: ../MLService/chunker
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - internal
+
+  normalizer:
+    build:
+      context: ../MLService/normalizer
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - internal
+
+  extractor:
+    build:
+      context: ../MLService/extractor
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      EMBEDDER_URL: http://embedder:8002
+      QDRANT_HOST: qdrant
+      VLM_URL: ${VLM_URL:-http://host.docker.internal:11434}
+      VLM_MODEL: ${VLM_MODEL:-qwen2.5vl:7b}
+    extra_hosts:
+      # Lets the extractor reach Ollama running on the host
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - redis
+      - qdrant
+      - embedder
+    networks:
+      - internal
+
+  embedder:
+    build:
+      context: ../MLService/inference/embedder
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SIGLIP_MODEL: ${SIGLIP_MODEL:-google/siglip2-base-patch16-224}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health', timeout=5).read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    networks:
+      - internal
+
+  # vlm: disabled locally — vllm/vllm-openai:latest is CUDA-only and won't run on Mac ARM
+  # vlm:
+  #   image: vllm/vllm-openai:latest
+  #   restart: unless-stopped
+  #   command: --model Qwen/Qwen2.5-VL-7B-AWQ --port 8001
+  #   networks:
+  #     - internal
+
+volumes:
+  mongo_data:
+  redis_data:
+  qdrant_data:
+  postgres_data:
+
+networks:
+  internal:
+  public:
