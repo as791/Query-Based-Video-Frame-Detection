@@ -1,0 +1,68 @@
+{
+  "fall": {
+    "average_precision": 0.0257,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.8,
+    "query": "a person fall",
+    "recall@1": 0.005,
+    "recall@20": 0.035,
+    "recall@5": 0.02,
+    "relevant_total": 200
+  },
+  "grab": {
+    "average_precision": 0.0397,
+    "first_rank": 2,
+    "mrr": 0.5,
+    "precision@5": 0.6,
+    "query": "a person grab",
+    "recall@1": 0.0,
+    "recall@20": 0.06,
+    "recall@5": 0.015,
+    "relevant_total": 200
+  },
+  "gun": {
+    "average_precision": 0.025,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.4,
+    "query": "a person gun",
+    "recall@1": 0.005,
+    "recall@20": 0.04,
+    "recall@5": 0.01,
+    "relevant_total": 200
+  },
+  "hit": {
+    "average_precision": 0.0286,
+    "first_rank": 2,
+    "mrr": 0.5,
+    "precision@5": 0.6,
+    "query": "a person hit",
+    "recall@1": 0.0,
+    "recall@20": 0.055,
+    "recall@5": 0.015,
+    "relevant_total": 200
+  },
+  "kick": {
+    "average_precision": 0.0156,
+    "first_rank": 2,
+    "mrr": 0.5,
+    "precision@5": 0.4,
+    "query": "a person kick",
+    "recall@1": 0.0,
+    "recall@20": 0.04,
+    "recall@5": 0.02,
+    "relevant_total": 100
+  },
+  "lyingdown": {
+    "average_precision": 0.0372,
+    "first_rank": 3,
+    "mrr": 0.3333,
+    "precision@5": 0.6,
+    "query": "a person lyingdown",
+    "recall@1": 0.0,
+    "recall@20": 0.08,
+    "recall@5": 0.03,
+    "relevant_total": 100
+  }
+}

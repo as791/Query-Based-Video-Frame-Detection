@@ -37,7 +37,7 @@ class ApiIntegrationTest {
                                     a.put("email", "test@example.com");
                                     a.put("name",  "Test User");
                                 })))
-                .andExpect(result -> { int s = result.getResponse().getStatus(); if (s != \1 && s != \2) throw new AssertionError("expected \1 or \2, got " + s); }); // 200 if user exists, 404 if not yet registered
+                .andExpect(result -> expectStatusOneOf(result.getResponse().getStatus(), 200, 404)); // 200 if user exists, 404 if not yet registered
     }
 
     @Test
@@ -64,7 +64,7 @@ class ApiIntegrationTest {
                                 }))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"query\":\"\"}"))
-                .andExpect(result -> { int s = result.getResponse().getStatus(); if (s != \1 && s != \2) throw new AssertionError("expected \1 or \2, got " + s); }); // 400 for blank query, 404 if user missing
+                .andExpect(result -> expectStatusOneOf(result.getResponse().getStatus(), 400, 404)); // 400 for blank query, 404 if user missing
     }
 
     @Test
@@ -75,6 +75,12 @@ class ApiIntegrationTest {
                                     a.put("sub",   "unknown-sub-xyz");
                                     a.put("email", "unknown@example.com");
                                 })))
-                .andExpect(result -> { int s = result.getResponse().getStatus(); if (s != \1 && s != \2) throw new AssertionError("expected \1 or \2, got " + s); });
+                .andExpect(status().isNotFound());
+    }
+
+    private static void expectStatusOneOf(int actual, int first, int second) {
+        if (actual != first && actual != second) {
+            throw new AssertionError("expected " + first + " or " + second + ", got " + actual);
+        }
     }
 }

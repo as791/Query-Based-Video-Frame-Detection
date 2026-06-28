@@ -43,6 +43,9 @@ public class SearchRerankService {
     @Value("${vlm.model:qwen2.5vl:7b}")
     private String vlmModel;
 
+    @Value("${search.llm-rerank.enabled:true}")
+    private boolean llmRerankEnabled;
+
     private volatile long llmRerankDisabledUntilMs = 0L;
 
     public List<Map<String, Object>> rerank(String query, List<Map<String, Object>> candidates, double minConfidence, int limit) {
@@ -51,13 +54,34 @@ public class SearchRerankService {
         }
         tryApplyLlmRerank(query, candidates);
 
-        return candidates.stream()
+        List<Map<String, Object>> ranked = candidates.stream()
                 .filter(candidate -> number(candidate.get("confidence")) >= minConfidence)
                 .sorted(Comparator
                         .comparingDouble((Map<String, Object> candidate) -> number(candidate.get("confidence"))).reversed()
                         .thenComparing(Comparator.comparingDouble((Map<String, Object> candidate) -> number(candidate.get("initial_score"))).reversed()))
-                .limit(limit)
                 .toList();
+
+        return diversifyByVideo(ranked, limit);
+    }
+
+    private List<Map<String, Object>> diversifyByVideo(List<Map<String, Object>> ranked, int limit) {
+        List<Map<String, Object>> diversified = new ArrayList<>();
+        Set<String> seenVideos = new HashSet<>();
+        for (Map<String, Object> candidate : ranked) {
+            String videoKey = resultVideoKey(candidate);
+            if (!seenVideos.add(videoKey)) continue;
+            diversified.add(candidate);
+            if (diversified.size() >= limit) break;
+        }
+        return diversified;
+    }
+
+    private String resultVideoKey(Map<String, Object> candidate) {
+        String videoId = string(candidate.get("video_id"));
+        if (!videoId.isBlank()) return "video:" + videoId;
+        String frameId = string(candidate.get("frame_id"));
+        if (!frameId.isBlank()) return "frame:" + frameId;
+        return "candidate:" + System.identityHashCode(candidate);
     }
 
     private void applyFallbackScore(String query, Map<String, Object> candidate) {
@@ -75,11 +99,28 @@ public class SearchRerankService {
         double overlap = queryTokens.isEmpty() ? 0 : Math.min(1.0, overlapCount / (double) Math.min(queryTokens.size(), 5));
         double initialScore = number(candidate.get("initial_score"));
         double analysisConfidence = number(candidate.get("analysis_confidence"));
-        double confidence = clamp((0.45 * initialScore) + (0.40 * overlap) + (0.15 * analysisConfidence));
+        double actionScore = number(candidate.get("action_score"));
+        double feedbackScore = number(candidate.get("feedback_score"));
+        double feedbackSignal = number(candidate.get("feedback_signal"));
+        if (feedbackSignal == 0.0 && feedbackScore > 0.0) {
+            feedbackSignal = (feedbackScore - 0.5) * 2.0;
+        }
+        double confidence = clamp((0.34 * initialScore) + (0.25 * overlap) + (0.18 * actionScore) + (0.08 * analysisConfidence) + (0.15 * feedbackSignal));
+        if (actionScore >= 0.85) {
+            confidence = Math.max(confidence, 0.86);
+        } else if (actionScore >= 0.65) {
+            confidence = Math.max(confidence, 0.78);
+        }
         if (overlap >= 0.67 && initialScore >= 0.30) {
             confidence = Math.max(confidence, 0.82);
         } else if (overlap >= 0.50 && initialScore >= 0.45) {
             confidence = Math.max(confidence, 0.80);
+        }
+        if (feedbackScore >= 0.75) {
+            confidence = Math.max(confidence, 0.76 + (feedbackScore * 0.12));
+        }
+        if (feedbackSignal <= -0.55) {
+            confidence = Math.min(confidence, 0.45);
         }
 
         candidate.put("confidence", round(confidence));
@@ -93,6 +134,7 @@ public class SearchRerankService {
 
     private void tryApplyLlmRerank(String query, List<Map<String, Object>> candidates) {
         if (candidates.isEmpty()) return;
+        if (!llmRerankEnabled) return;
         long now = System.currentTimeMillis();
         if (now < llmRerankDisabledUntilMs) {
             log.debug("Skipping LLM rerank during cooldown");
@@ -181,7 +223,10 @@ public class SearchRerankService {
         item.put("objects", candidate.get("objects"));
         item.put("scene", string(candidate.get("scene")));
         item.put("motion", string(candidate.get("motion")));
-        item.put("sourceFile", string(candidate.get("source_file")));
+        item.put("actionTop", string(candidate.get("action_top")));
+        item.put("actionLabels", candidate.get("action_labels"));
+        item.put("actionScore", number(candidate.get("action_score")));
+        item.put("feedbackScore", number(candidate.get("feedback_score")));
         return item;
     }
 
@@ -227,10 +272,11 @@ public class SearchRerankService {
                 string(candidate.get("main_activity")),
                 string(candidate.get("scene")),
                 string(candidate.get("motion")),
-                string(candidate.get("source_file")),
                 string(candidate.get("profile")),
+                string(candidate.get("action_top")),
                 valueText(candidate.get("tags")),
-                valueText(candidate.get("objects")));
+                valueText(candidate.get("objects")),
+                valueText(candidate.get("action_labels")));
     }
 
     private String valueText(Object value) {

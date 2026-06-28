@@ -1,0 +1,602 @@
+{
+  "02b05d99-d88c-46be-9e5e-f3ee54d5e565": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/SPHAR_p02faint_fall_1.mp4",
+    "source_file": "SPHAR_p02faint_fall_1.mp4"
+  },
+  "0336d51d-2e08-44dd-bd38-9c04ad29fe70": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0036_fall_1.mp4",
+    "source_file": "NTU_fight0036_fall_1.mp4"
+  },
+  "0660a423-689c-464f-b35f-6c4da4a82564": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0197_fall_1.mp4",
+    "source_file": "NTU_fight0197_fall_1.mp4"
+  },
+  "0aee98f6-72b6-4e73-8b9c-57e1feafd903": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting018_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting018_fall_1.mp4"
+  },
+  "0bccf04b-fc06-423e-8632-1970feec1c16": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting047_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting047_fall_1.mp4"
+  },
+  "0ccbd5ff-22e4-4730-9a53-90de42104bd6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0048_fall_1.mp4",
+    "source_file": "NTU_fight0048_fall_1.mp4"
+  },
+  "11dc5abf-3848-49e4-a19a-5d8136185387": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault046_fall_1.mp4",
+    "source_file": "UCFCRIME_Assault046_fall_1.mp4"
+  },
+  "17d58fee-bfbd-4b7e-885a-9ee99c4935d1": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting053_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting053_fall_1.mp4"
+  },
+  "19776c07-d11e-4e77-9ef6-589538a1f6d9": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery073_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery073_fall_1.mp4"
+  },
+  "1a03a64f-76d5-48cb-bda5-bb8e548f48ab": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0321_fall_1.mp4",
+    "source_file": "NTU_fight0321_fall_1.mp4"
+  },
+  "1b58eeb0-617a-4d09-a9c7-70cac7078ee6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault036_fall_1.mp4",
+    "source_file": "UCFCRIME_Assault036_fall_1.mp4"
+  },
+  "1bc6e8d8-e526-4d51-9bfb-704eb455af10": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting008_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting008_fall_1.mp4"
+  },
+  "24247620-5712-487f-90f1-181d8209ff34": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0114_fall_1.mp4",
+    "source_file": "NTU_fight0114_fall_1.mp4"
+  },
+  "27653ea8-5d13-4f2f-a2ae-df4afce0a4cd": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_2.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_2.mp4"
+  },
+  "280b8b02-a18f-48d6-a4bb-90ff9cfbd9a3": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting028_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting028_fall_1.mp4"
+  },
+  "2850d55c-128f-4268-8f6f-1e849f163448": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arrest041_fall_1.mp4",
+    "source_file": "UCFCRIME_Arrest041_fall_1.mp4"
+  },
+  "2a67ddf2-fe02-42e3-a4d6-1d702cf21034": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting032_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting032_fall_1.mp4"
+  },
+  "2bb7ff05-a01d-4319-b37b-dc6d2af06676": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/SPHAR_p08faint_fall_1.mp4",
+    "source_file": "SPHAR_p08faint_fall_1.mp4"
+  },
+  "32d6a630-0986-4e62-8d40-001acd10760c": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_15.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_15.mp4"
+  },
+  "37ca5ef1-88bf-4dd6-95c5-19e4b8fc0d2a": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0795_fall_2.mp4",
+    "source_file": "NTU_fight0795_fall_2.mp4"
+  },
+  "3a703a25-b2f9-4ffc-a761-a5b9df04aa37": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault036_fall_2.mp4",
+    "source_file": "UCFCRIME_Assault036_fall_2.mp4"
+  },
+  "3b7e3536-de29-46cc-943b-3e94e0dc13a0": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting032_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting032_fall_1.mp4"
+  },
+  "3e4cb5d4-f143-4c39-8710-a39d0d235059": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arrest023_fall_1.mp4",
+    "source_file": "UCFCRIME_Arrest023_fall_1.mp4"
+  },
+  "40fe0e4d-ca0f-4dd7-9135-a1dcf6ba0950": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault001_fall_1.mp4",
+    "source_file": "UCFCRIME_Assault001_fall_1.mp4"
+  },
+  "429b4cad-2894-4440-aead-50aa3dfbbe0b": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery138_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery138_fall_1.mp4"
+  },
+  "42b82b14-0022-4e77-b27f-ec236d1f1cbe": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting011_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting011_fall_1.mp4"
+  },
+  "4907f6ef-1fd2-4d4a-9f5b-d4e154690a75": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0221_fall_1.mp4",
+    "source_file": "NTU_fight0221_fall_1.mp4"
+  },
+  "4a08bd81-203c-4227-8df3-1244ecf7c2c6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting033_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting033_fall_1.mp4"
+  },
+  "4cbd1692-d1fb-477d-8091-01657baaf37f": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault050_fall_1.mp4",
+    "source_file": "UCFCRIME_Assault050_fall_1.mp4"
+  },
+  "4cf45e5f-dc60-4f95-a36c-9a6b5e165126": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_1.mp4",
+    "source_file": "NTU_fight0003_fall_1.mp4"
+  },
+  "4fb72c0f-bb11-4af0-a05a-acc74965029d": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arrest007_fall_1.mp4",
+    "source_file": "UCFCRIME_Arrest007_fall_1.mp4"
+  },
+  "501dffae-8275-4159-a402-e3da26e7378c": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0009_fall_1.mp4",
+    "source_file": "NTU_fight0009_fall_1.mp4"
+  },
+  "5031953f-5349-4335-9733-d88698c0b13d": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault008_fall_1.mp4",
+    "source_file": "UCFCRIME_Assault008_fall_1.mp4"
+  },
+  "51b8e5ce-4ded-4213-a784-c0d5b341ee65": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting018_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting018_fall_1.mp4"
+  },
+  "5277f33a-9600-4018-a9fe-7e03e6336e86": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_17.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_17.mp4"
+  },
+  "531e1f46-f6ad-4d44-88c7-3014c80b8dfd": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting004_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting004_fall_1.mp4"
+  },
+  "53c0585b-e47e-4c57-8d40-a8248b462c4b": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery133_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery133_fall_1.mp4"
+  },
+  "53e575a1-f5c2-404d-9a6f-615f97e13864": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0023_fall_1.mp4",
+    "source_file": "NTU_fight0023_fall_1.mp4"
+  },
+  "549ae426-14f8-44d4-be8c-4ce71ada12ef": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_2.mp4",
+    "source_file": "NTU_fight0003_fall_2.mp4"
+  },
+  "556908b1-4baa-4c12-904f-6c92c2800d6b": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery024_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery024_fall_1.mp4"
+  },
+  "55e4073d-137e-4392-aeff-4cc1f7231c97": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0008_fall_1.mp4",
+    "source_file": "NTU_fight0008_fall_1.mp4"
+  },
+  "59840aa7-1658-4b5b-84e1-fbd7685ff9f7": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting030_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting030_fall_1.mp4"
+  },
+  "5beae5fe-791b-4327-be31-603bb6603fe1": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0062_fall_1.mp4",
+    "source_file": "NTU_fight0062_fall_1.mp4"
+  },
+  "5c2092d7-d57e-4952-ab5c-af0f191ebd46": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0092_fall_1.mp4",
+    "source_file": "NTU_fight0092_fall_1.mp4"
+  },
+  "68eb612f-3c9b-406a-8d84-7ccea6a206cb": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Vandalism020_fall_2.mp4",
+    "source_file": "UCFCRIME_Vandalism020_fall_2.mp4"
+  },
+  "6d5974cb-742f-478e-9d3e-e05f566d520b": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0180_fall_1.mp4",
+    "source_file": "NTU_fight0180_fall_1.mp4"
+  },
+  "70fa51c3-7780-4aca-91dc-5ba7c25c0452": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery064_fall_2.mp4",
+    "source_file": "UCFCRIME_Robbery064_fall_2.mp4"
+  },
+  "7502f363-2143-41df-984e-2b739e6bb274": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_10.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_10.mp4"
+  },
+  "752f6514-d083-48ca-bb24-e555f1011580": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_1.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_1.mp4"
+  },
+  "76de2535-32dd-434c-95d9-42314c262579": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0105_fall_1.mp4",
+    "source_file": "NTU_fight0105_fall_1.mp4"
+  },
+  "78d9864e-9632-483a-8c76-0d6d7ba2b512": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0985_fall_1.mp4",
+    "source_file": "NTU_fight0985_fall_1.mp4"
+  },
+  "79cf91ad-cb39-4f6e-bba6-9f8aca5f23c4": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arrest005_fall_1.mp4",
+    "source_file": "UCFCRIME_Arrest005_fall_1.mp4"
+  },
+  "7a929863-5bc6-4d48-ace2-31118d243f73": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_11.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_11.mp4"
+  },
+  "7ea40375-51da-45f9-b872-73a75c127a11": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_1.mp4",
+    "source_file": "NTU_fight0146_fall_1.mp4"
+  },
+  "81cb318a-4b17-4bfb-ae13-a4d3bd079152": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0810_fall_1.mp4",
+    "source_file": "NTU_fight0810_fall_1.mp4"
+  },
+  "81d923bd-b2c6-465c-b9f7-dbe16a65af80": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery144_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery144_fall_1.mp4"
+  },
+  "886cffae-f0b2-4e97-9461-7452f80f02fe": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arrest046_fall_1.mp4",
+    "source_file": "UCFCRIME_Arrest046_fall_1.mp4"
+  },
+  "8c534ec0-e442-4edf-85b4-14c0e0641e42": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_14.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_14.mp4"
+  },
+  "8d99d468-847a-4495-8f99-763313e23009": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery006_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery006_fall_1.mp4"
+  },
+  "8e2e1055-ef58-442d-9c44-eafb7fea2ee8": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_18.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_18.mp4"
+  },
+  "8ed9b43d-4c33-4acd-bf90-aea3fd60d9f5": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arson001_fall_1.mp4",
+    "source_file": "UCFCRIME_Arson001_fall_1.mp4"
+  },
+  "96aef969-ed44-40d0-b1c3-d6d16f122cce": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0142_fall_1.mp4",
+    "source_file": "NTU_fight0142_fall_1.mp4"
+  },
+  "99127aba-8a27-4b25-87b9-28357f3c9855": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0095_fall_1.mp4",
+    "source_file": "NTU_fight0095_fall_1.mp4"
+  },
+  "9c242691-e8e6-4aba-a6ca-f666418e77f6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0400_fall_1.mp4",
+    "source_file": "NTU_fight0400_fall_1.mp4"
+  },
+  "a4e56602-c186-478c-953b-32d1661ed122": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault018_fall_1.mp4",
+    "source_file": "UCFCRIME_Assault018_fall_1.mp4"
+  },
+  "a5c168f5-ebae-4d6d-b160-c207b01989d8": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_2.mp4",
+    "source_file": "NTU_fight0146_fall_2.mp4"
+  },
+  "a6bf743b-cbc4-489d-99c6-ab655082dbad": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_16.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_16.mp4"
+  },
+  "a80430c8-867a-4ae8-a396-cc27a84f642d": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/SPHAR_p01faint_fall_1.mp4",
+    "source_file": "SPHAR_p01faint_fall_1.mp4"
+  },
+  "a8707b82-da09-4bbb-9a0b-5f4cce5729c2": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_21.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_21.mp4"
+  },
+  "a96fc27c-59ff-4b74-a520-d0262203e4a9": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0200_fall_1.mp4",
+    "source_file": "NTU_fight0200_fall_1.mp4"
+  },
+  "aa0e1c84-dbb7-402b-9417-39e5ff7c5d82": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting031_fall_2.mp4",
+    "source_file": "UCFCRIME_Shooting031_fall_2.mp4"
+  },
+  "ac779fbd-32a6-40ce-88fd-bfbe923683e0": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery024_fall_2.mp4",
+    "source_file": "UCFCRIME_Robbery024_fall_2.mp4"
+  },
+  "afab3862-1635-4c42-b21f-85693938da76": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_20.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_20.mp4"
+  },
+  "b2fd0e59-8dc5-40f5-ba5f-33f8ebba6b8a": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting050_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting050_fall_1.mp4"
+  },
+  "b6ea32db-104e-424c-bb04-ede316b9ed24": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery114_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery114_fall_1.mp4"
+  },
+  "b8e2fc35-65c8-4781-bcff-5eb3e3e2ffcf": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Arrest022_fall_1.mp4",
+    "source_file": "UCFCRIME_Arrest022_fall_1.mp4"
+  },
+  "bdaa31e9-59dd-4ab7-87eb-7ab7b698f320": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_12.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_12.mp4"
+  },
+  "c27d9c2f-98ff-4e9a-a375-a5e3fccddd52": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery089_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery089_fall_1.mp4"
+  },
+  "c4bcbaaa-aaf8-40bf-9741-f5b9c17252fe": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting011_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting011_fall_1.mp4"
+  },
+  "c79aa56e-8445-4bd6-8ac3-c9e9a2647799": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0831_fall_1.mp4",
+    "source_file": "NTU_fight0831_fall_1.mp4"
+  },
+  "cb9eabe3-a71c-4849-8b94-5b2ad1605220": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting053_fall_2.mp4",
+    "source_file": "UCFCRIME_Shooting053_fall_2.mp4"
+  },
+  "d572cc5e-a399-48ba-999a-4b9025ace205": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_19.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_19.mp4"
+  },
+  "d6791960-d637-43eb-8280-a287055a1cc9": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shoplifting019_fall_1.mp4",
+    "source_file": "UCFCRIME_Shoplifting019_fall_1.mp4"
+  },
+  "d6de0b5b-d78c-4757-b1cb-09286084aa69": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_13.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_13.mp4"
+  },
+  "dac9ca41-c68d-42ef-b8d0-b5ca92ed8082": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/SPHAR_p17faint_fall_1.mp4",
+    "source_file": "SPHAR_p17faint_fall_1.mp4"
+  },
+  "dbc7f923-815a-4c2b-8612-7e8df50382d6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery064_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery064_fall_1.mp4"
+  },
+  "de0ccde2-fb88-4649-b1c5-fd0b4de2ad01": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Vandalism020_fall_1.mp4",
+    "source_file": "UCFCRIME_Vandalism020_fall_1.mp4"
+  },
+  "de6c6db5-50da-464d-9cb5-aed022f4b1b6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0795_fall_1.mp4",
+    "source_file": "NTU_fight0795_fall_1.mp4"
+  },
+  "e1ef26ee-9ce9-48b6-af63-8180db926f67": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting047_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting047_fall_1.mp4"
+  },
+  "ec1c357b-e6af-4604-abe4-cfba5d7988d5": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting010_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting010_fall_1.mp4"
+  },
+  "ee9b888b-12fc-4b0a-a9c9-1105e115de80": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0172_fall_1.mp4",
+    "source_file": "NTU_fight0172_fall_1.mp4"
+  },
+  "efaa81ae-b1b1-42f3-b4a3-146b757785a0": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting036_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting036_fall_1.mp4"
+  },
+  "f24d7382-29bd-484d-94e6-23cecbcfa9f6": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Assault046_fall_2.mp4",
+    "source_file": "UCFCRIME_Assault046_fall_2.mp4"
+  },
+  "f6e3b3b4-2d29-47ed-9817-d276bd3f8c27": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting019_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting019_fall_1.mp4"
+  },
+  "f7182b46-4657-4bad-83c7-b09a82106e82": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Robbery094_fall_1.mp4",
+    "source_file": "UCFCRIME_Robbery094_fall_1.mp4"
+  },
+  "f8a10812-b627-4ba3-a42c-9071a1edfd55": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting030_fall_2.mp4",
+    "source_file": "UCFCRIME_Fighting030_fall_2.mp4"
+  },
+  "fb554362-4516-46c7-bbcd-3be2e7733416": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0069_fall_1.mp4",
+    "source_file": "NTU_fight0069_fall_1.mp4"
+  },
+  "fcc45b8c-666f-4d97-9cf4-75e3afb79f0e": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/YOUTUBE_YouTubeCCTV001_fall_22.mp4",
+    "source_file": "YOUTUBE_YouTubeCCTV001_fall_22.mp4"
+  },
+  "fd68246c-6703-48d9-a7e0-761123cfdbd5": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Shooting031_fall_1.mp4",
+    "source_file": "UCFCRIME_Shooting031_fall_1.mp4"
+  },
+  "ffa71087-5557-4aab-a2f4-5fbe5936cf8d": {
+    "benchmark_run_id": "taxonomy-actionscore-100b-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/UCFCRIME_Fighting006_fall_1.mp4",
+    "source_file": "UCFCRIME_Fighting006_fall_1.mp4"
+  }
+}

@@ -164,6 +164,7 @@ def process(msg_id, data, s3, r):
     video_id = data["video_id"]
     user_id = data["user_id"]
     tenant_id = data.get("tenant_id", "default")
+    domain_id = data.get("domain_id", "general")
     profile = data.get("profile", "general")
     chunk_id = data["chunk_id"]
     chunk_index = data.get("chunk_index", "")
@@ -173,6 +174,10 @@ def process(msg_id, data, s3, r):
     s3_chunk_key = data.get("s3_chunk_path") or data.get("s3_path")
     source_file = data.get("source_file", "video.mp4")
     video_metadata_json = data.get("video_metadata_json", "{}")
+    benchmark_run_id = data.get("benchmark_run_id", "")
+    few_shot_example = data.get("few_shot_example", "")
+    few_shot_label = data.get("few_shot_label", "")
+    few_shot_model_id = data.get("few_shot_model_id", "")
 
     emit_status(
         r, video_id, "normalizing",
@@ -200,9 +205,14 @@ def process(msg_id, data, s3, r):
             "video_id": video_id,
             "user_id": user_id,
             "tenant_id": tenant_id,
+            "domain_id": domain_id,
             "profile": profile,
             "source_file": source_file,
             "video_metadata_json": video_metadata_json,
+            "benchmark_run_id": benchmark_run_id,
+            "few_shot_example": few_shot_example,
+            "few_shot_label": few_shot_label,
+            "few_shot_model_id": few_shot_model_id,
             "chunk_id": chunk_id,
             "chunk_index": str(chunk_index),
             "chunk_count": str(chunk_count),
@@ -224,6 +234,7 @@ def process(msg_id, data, s3, r):
             "video_id": video_id,
             "user_id": user_id,
             "tenant_id": tenant_id,
+            "domain_id": domain_id,
             "profile": profile,
             "chunk_id": chunk_id,
             "chunk_index": str(chunk_index),

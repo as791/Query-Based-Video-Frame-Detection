@@ -9,7 +9,10 @@ type Message = {
   content: string
   status?: string
   error?: boolean
+  sourcesJson?: string
 }
+
+const ACTIVE_CHAT_KEY = 'videovault:activeChatSessionId'
 
 export default function AskPage() {
   const [sessions, setSessions] = useState<ChatSession[]>([])
@@ -19,6 +22,7 @@ export default function AskPage() {
   const [connected, setConnected] = useState(false)
   const [error, setError] = useState('')
   const socketRef = useRef<WebSocket | null>(null)
+  const activeSessionIdRef = useRef<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   const streaming = useMemo(() => messages.some(m => m.role === 'assistant' && m.status === 'streaming'), [messages])
@@ -26,62 +30,39 @@ export default function AskPage() {
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [messages])
 
   useEffect(() => {
-    const socket = openChatSocket()
-    socketRef.current = socket
-    socket.onopen = () => {
-      setConnected(true)
-      setError('')
-      socket.send(JSON.stringify({ type: 'session.list' }))
+    let disposed = false
+    let reconnectTimer: ReturnType<typeof setTimeout> | null = null
+
+    function connect() {
+      if (disposed) return
+      const socket = openChatSocket()
+      socketRef.current = socket
+      socket.onopen = () => {
+        setConnected(true)
+        setError('')
+        socket.send(JSON.stringify({ type: 'session.list' }))
+      }
+      socket.onclose = () => {
+        if (socketRef.current === socket) socketRef.current = null
+        setConnected(false)
+        if (!disposed) {
+          setError('Chat connection closed. Reconnecting...')
+          reconnectTimer = setTimeout(connect, 1200)
+        }
+      }
+      socket.onerror = () => {
+        setConnected(false)
+        setError('Chat connection failed')
+      }
+      socket.onmessage = (event) => handleSocketMessage(JSON.parse(event.data))
     }
-    socket.onclose = () => {
-      setConnected(false)
-      setError('Chat connection closed')
+
+    connect()
+    return () => {
+      disposed = true
+      if (reconnectTimer) clearTimeout(reconnectTimer)
+      socketRef.current?.close()
     }
-    socket.onerror = () => {
-      setConnected(false)
-      setError('Chat connection failed')
-    }
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-      if (data.type === 'session.listed') {
-        setSessions(data.sessions || [])
-      }
-      if (data.type === 'session.created') {
-        setSessions(prev => upsertSession(prev, data.session))
-        setActiveSessionId(data.session.id)
-        setMessages([])
-      }
-      if (data.type === 'messages.listed') {
-        setActiveSessionId(data.sessionId)
-        setMessages((data.messages || []).map(toMessage))
-      }
-      if (data.type === 'message.started') {
-        setSessions(prev => upsertSession(prev, data.session))
-        setActiveSessionId(data.session.id)
-        setMessages(prev => {
-          const next = [...prev]
-          if (!next.some(m => m.id === data.userMessage.id)) next.push(toMessage(data.userMessage))
-          if (!next.some(m => m.id === data.assistantMessage.id)) next.push(toMessage(data.assistantMessage))
-          return next
-        })
-      }
-      if (data.type === 'assistant.delta') {
-        setMessages(prev => prev.map(m => m.id === data.messageId ? { ...m, content: m.content + data.delta, status: 'streaming' } : m))
-      }
-      if (data.type === 'assistant.completed') {
-        setMessages(prev => prev.map(m => m.id === data.messageId ? { ...m, status: 'complete' } : m))
-      }
-      if (data.type === 'assistant.error') {
-        setError(data.message || 'Chat failed')
-        setMessages(prev => {
-          if (!prev.length || prev[prev.length - 1].role !== 'assistant') return prev
-          const next = [...prev]
-          next[next.length - 1] = { ...next[next.length - 1], content: next[next.length - 1].content || data.message, error: true, status: 'complete' }
-          return next
-        })
-      }
-    }
-    return () => socket.close()
   }, [])
 
   function sendSocket(payload: Record<string, unknown>) {
@@ -93,12 +74,99 @@ export default function AskPage() {
     socket.send(JSON.stringify(payload))
   }
 
+  function handleSocketMessage(data: any) {
+    if (data.type === 'session.listed') {
+      const nextSessions = data.sessions || []
+      setSessions(nextSessions)
+      const target = chooseSessionId(nextSessions, data.activeSessionId)
+      if (target) {
+        openSession(target, { updateServer: false })
+      }
+    }
+    if (data.type === 'session.created') {
+      setSessions(prev => upsertSession(prev, data.session))
+      setActiveSession(data.session.id)
+      setMessages([])
+      sendSocket({ type: 'session.subscribe', sessionId: data.session.id })
+    }
+    if (data.type === 'session.activated') {
+      setSessions(prev => upsertSession(prev, data.session))
+    }
+    if (data.type === 'messages.listed') {
+      setActiveSession(data.sessionId)
+      setMessages((data.messages || []).map(toMessage))
+      sendSocket({ type: 'session.subscribe', sessionId: data.sessionId })
+    }
+    if (data.type === 'message.started') {
+      if (data.session) setSessions(prev => upsertSession(prev, data.session))
+      if (data.session?.id && (!activeSessionIdRef.current || data.session.id === activeSessionIdRef.current)) {
+        setActiveSession(data.session.id)
+      }
+      if (!isActiveEvent(data)) return
+      setMessages(prev => mergeMessages(prev, [toMessage(data.userMessage), toMessage(data.assistantMessage)]))
+    }
+    if (data.type === 'assistant.sources') {
+      if (!isActiveEvent(data)) return
+      setMessages(prev => prev.map(m => m.id === data.messageId ? { ...m, sourcesJson: JSON.stringify(data.sources || []) } : m))
+    }
+    if (data.type === 'assistant.delta') {
+      if (!isActiveEvent(data)) return
+      setMessages(prev => prev.map(m => m.id === data.messageId ? { ...m, content: m.content + data.delta, status: 'streaming' } : m))
+    }
+    if (data.type === 'assistant.completed') {
+      if (!isActiveEvent(data)) return
+      setMessages(prev => prev.map(m => m.id === data.messageId ? { ...m, status: 'complete' } : m))
+    }
+    if (data.type === 'assistant.error') {
+      if (data.sessionId && !isActiveEvent(data)) return
+      setError(data.message || 'Chat failed')
+      setMessages(prev => {
+        if (!prev.length || prev[prev.length - 1].role !== 'assistant') return prev
+        const next = [...prev]
+        next[next.length - 1] = { ...next[next.length - 1], content: next[next.length - 1].content || data.message, error: true, status: 'complete' }
+        return next
+      })
+    }
+  }
+
+  function chooseSessionId(nextSessions: ChatSession[], backendActiveSessionId?: string) {
+    const validIds = new Set(nextSessions.map(session => session.id))
+    const urlSessionId = new URLSearchParams(window.location.search).get('sessionId') || ''
+    const cachedSessionId = localStorage.getItem(ACTIVE_CHAT_KEY) || ''
+    if (urlSessionId && validIds.has(urlSessionId)) return urlSessionId
+    if (backendActiveSessionId && validIds.has(backendActiveSessionId)) return backendActiveSessionId
+    if (cachedSessionId && validIds.has(cachedSessionId)) return cachedSessionId
+    return nextSessions[0]?.id || ''
+  }
+
+  function isActiveEvent(data: any) {
+    return !data.sessionId || data.sessionId === activeSessionIdRef.current
+  }
+
+  function setActiveSession(id: string) {
+    activeSessionIdRef.current = id
+    setActiveSessionId(id)
+    localStorage.setItem(ACTIVE_CHAT_KEY, id)
+    const url = new URL(window.location.href)
+    url.pathname = '/ask'
+    url.searchParams.set('sessionId', id)
+    window.history.replaceState(null, '', `${url.pathname}?${url.searchParams.toString()}`)
+  }
+
+  function openSession(id: string, options: { updateServer: boolean }) {
+    if (!id) return
+    setActiveSession(id)
+    if (options.updateServer) sendSocket({ type: 'session.activate', sessionId: id })
+    sendSocket({ type: 'messages.list', sessionId: id })
+    sendSocket({ type: 'session.subscribe', sessionId: id })
+  }
+
   function createSession() {
     sendSocket({ type: 'session.create' })
   }
 
   function loadSession(id: string) {
-    sendSocket({ type: 'messages.list', sessionId: id })
+    openSession(id, { updateServer: true })
   }
 
   function send(e: FormEvent) {
@@ -109,7 +177,7 @@ export default function AskPage() {
     setError('')
     sendSocket({
       type: 'message.send',
-      sessionId: activeSessionId,
+      sessionId: activeSessionIdRef.current,
       content,
       clientMessageId: crypto.randomUUID(),
     })
@@ -181,9 +249,18 @@ function toMessage(raw: any): Message {
     role: raw.role,
     content: raw.content || '',
     status: raw.status,
+    sourcesJson: raw.sourcesJson,
   }
 }
 
 function upsertSession(sessions: ChatSession[], session: ChatSession) {
   return [session, ...sessions.filter(item => item.id !== session.id)]
+}
+
+function mergeMessages(existing: Message[], incoming: Message[]) {
+  const byId = new Map(existing.map(message => [message.id, message]))
+  for (const message of incoming) {
+    if (!byId.has(message.id)) byId.set(message.id, message)
+  }
+  return Array.from(byId.values())
 }

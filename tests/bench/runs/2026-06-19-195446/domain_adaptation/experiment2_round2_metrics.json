@@ -1,0 +1,15 @@
+{
+  "domains": 3,
+  "search": {
+    "latency_ms": {
+      "p50": 97.05,
+      "p95": 270.82
+    },
+    "map": 0.3432,
+    "mrr": 0.7348,
+    "precision@5": 0.24,
+    "recall@1": 0.1356,
+    "recall@20": 0.78,
+    "recall@5": 0.24
+  }
+}

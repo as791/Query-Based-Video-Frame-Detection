@@ -72,7 +72,10 @@ services:
       context: ../BackendService
       dockerfile: Dockerfile
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+      - path: .benchmark.env
+        required: false
     environment:
       SPRING_DATA_MONGODB_URI: ${MONGO_URI}
       SPRING_REDIS_URI: ${REDIS_URI}
@@ -81,6 +84,12 @@ services:
       VLM_URL: ${VLM_URL:-http://host.docker.internal:11434}
       VLM_MODEL: ${VLM_MODEL:-qwen2.5vl:7b}
       FRONTEND_ORIGIN: http://localhost:3000
+      BENCHMARK_AUTH_ENABLED: ${BENCHMARK_AUTH_ENABLED:-false}
+      BENCHMARK_GOOGLE_SUB: ${BENCHMARK_GOOGLE_SUB:-}
+      SEARCH_LLM_RERANK_ENABLED: ${SEARCH_LLM_RERANK_ENABLED:-true}
+      SEARCH_CANDIDATES_CHUNK_LIMIT: ${SEARCH_CANDIDATES_CHUNK_LIMIT:-100}
+      SEARCH_CANDIDATES_FRAME_LIMIT: ${SEARCH_CANDIDATES_FRAME_LIMIT:-160}
+      SEARCH_CANDIDATES_ACTION_LIMIT: ${SEARCH_CANDIDATES_ACTION_LIMIT:-160}
     ports:
       - "8080:8080"
     extra_hosts:
@@ -108,7 +117,10 @@ services:
       context: ../MLService
       dockerfile: Dockerfile
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+      - path: .benchmark.env
+        required: false
     networks:
       - internal
 
@@ -117,7 +129,10 @@ services:
       context: ../web
       dockerfile: Dockerfile
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+      - path: .benchmark.env
+        required: false
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8080
       API_URL: http://api:8080
@@ -156,12 +171,16 @@ services:
       context: ../MLService/extractor
       dockerfile: Dockerfile
     restart: unless-stopped
-    env_file: .env
+    env_file:
+      - path: .env
+      - path: .benchmark.env
+        required: false
     environment:
       EMBEDDER_URL: http://embedder:8002
       QDRANT_HOST: qdrant
       VLM_URL: ${VLM_URL:-http://host.docker.internal:11434}
       VLM_MODEL: ${VLM_MODEL:-qwen2.5vl:7b}
+      EXTRACTOR_BENCHMARK_RUN_FILTER: ${EXTRACTOR_BENCHMARK_RUN_FILTER:-}
     extra_hosts:
       # Lets the extractor reach Ollama running on the host
       - "host.docker.internal:host-gateway"
@@ -169,6 +188,45 @@ services:
       - redis
       - qdrant
       - embedder
+    networks:
+      - internal
+
+  autoscaler:
+    build:
+      context: ./autoscaler
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    profiles:
+      - autoscaler
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME:-compose}
+      AUTOSCALER_COMPOSE_FILE: /workspace/compose/docker-compose.yml
+      AUTOSCALER_POLL_INTERVAL_SEC: ${AUTOSCALER_POLL_INTERVAL_SEC:-15}
+      AUTOSCALER_SCALE_COOLDOWN_SEC: ${AUTOSCALER_SCALE_COOLDOWN_SEC:-60}
+      AUTOSCALER_DRY_RUN: ${AUTOSCALER_DRY_RUN:-false}
+      CHUNKER_MIN_REPLICAS: ${CHUNKER_MIN_REPLICAS:-1}
+      CHUNKER_MAX_REPLICAS: ${CHUNKER_MAX_REPLICAS:-4}
+      CHUNKER_SCALE_STEP: ${CHUNKER_SCALE_STEP:-1}
+      CHUNKER_SCALE_UP_AT: ${CHUNKER_SCALE_UP_AT:-50}
+      CHUNKER_SCALE_DOWN_BELOW: ${CHUNKER_SCALE_DOWN_BELOW:-5}
+      NORMALIZER_MIN_REPLICAS: ${NORMALIZER_MIN_REPLICAS:-1}
+      NORMALIZER_MAX_REPLICAS: ${NORMALIZER_MAX_REPLICAS:-4}
+      NORMALIZER_SCALE_STEP: ${NORMALIZER_SCALE_STEP:-1}
+      NORMALIZER_SCALE_UP_AT: ${NORMALIZER_SCALE_UP_AT:-50}
+      NORMALIZER_SCALE_DOWN_BELOW: ${NORMALIZER_SCALE_DOWN_BELOW:-5}
+      EXTRACTOR_MIN_REPLICAS: ${EXTRACTOR_MIN_REPLICAS:-1}
+      EXTRACTOR_MAX_REPLICAS: ${EXTRACTOR_MAX_REPLICAS:-1}
+      EXTRACTOR_SCALE_STEP: ${EXTRACTOR_SCALE_STEP:-1}
+      EXTRACTOR_SCALE_UP_AT: ${EXTRACTOR_SCALE_UP_AT:-25}
+      EXTRACTOR_SCALE_DOWN_BELOW: ${EXTRACTOR_SCALE_DOWN_BELOW:-3}
+    working_dir: /workspace/compose
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ..:/workspace:ro
+    depends_on:
+      - redis
     networks:
       - internal
 

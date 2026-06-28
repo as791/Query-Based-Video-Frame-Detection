@@ -1,0 +1,5 @@
+{"hits": [], "label": "gun", "latency_ms": 155.31, "query": "a person gun"}
+{"hits": [], "label": "hit", "latency_ms": 126.02, "query": "a person hit"}
+{"hits": [], "label": "kick", "latency_ms": 110.61, "query": "a person kick"}
+{"hits": [], "label": "struggle", "latency_ms": 116.81, "query": "a person struggle"}
+{"hits": [], "label": "throw", "latency_ms": 116.84, "query": "a person throw"}

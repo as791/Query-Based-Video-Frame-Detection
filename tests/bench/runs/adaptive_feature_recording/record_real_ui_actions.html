@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Adaptive Learning Real UI Action Recording</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #0b1020;
+      color: #dbeafe;
+      font: 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { width: min(1512px, 100vw); }
+    canvas { display: block; width: 100%; background: #030712; }
+    .status { padding: 10px 12px; }
+    a { color: #38bdf8; }
+  </style>
+</head>
+<body>
+<main>
+  <canvas id="stage" width="1512" height="772"></canvas>
+  <div class="status" id="status">Preparing action recording...</div>
+  <textarea id="recordingData" hidden></textarea>
+  <video id="clip" src="SPHAR_p01faint_fall_1.mp4" muted playsinline preload="auto" hidden></video>
+</main>
+<script>
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const clip = document.getElementById('clip');
+const W = canvas.width;
+const H = canvas.height;
+
+const steps = [
+  ['image', 'action_01_features_general.jpg', 'Open Features'],
+  ['image', 'action_02_domain_selected_examples.jpg', 'Select CCTV adaptive demo domain', 375, 206],
+  ['clip', null, 'Actual uploaded fall clip preview'],
+  ['image', 'action_03_upload_examples_ready.jpg', 'Few-shot upload entry point for real clips', 1130, 372],
+  ['image', 'action_04_library_general.jpg', 'Open Library'],
+  ['image', 'action_05_library_domain_selected.jpg', 'Select same domain for search', 365, 170],
+  ['image', 'action_06_query_typed.jpg', 'Type: person falling down', 430, 104],
+  ['image', 'action_07_results_with_feedback_buttons.jpg', 'Search returns real indexed frames with feedback buttons', 585, 103],
+  ['image', 'action_08_relevant_clicked.jpg', 'Mark the best result Relevant', 120, 675],
+  ['image', 'action_09_not_relevant_clicked.jpg', 'Mark a weaker result Not relevant', 445, 675],
+  ['image', 'action_10_frame_modal.jpg', 'Open extracted frame evidence']
+];
+
+const images = {};
+
+function drawLabel(text) {
+  ctx.fillStyle = 'rgba(2, 6, 23, 0.82)';
+  ctx.fillRect(24, H - 74, Math.min(780, 34 + text.length * 13), 48);
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+  ctx.strokeRect(24, H - 74, Math.min(780, 34 + text.length * 13), 48);
+  ctx.fillStyle = '#e0f2fe';
+  ctx.font = '24px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
+  ctx.fillText(text, 42, H - 42);
+}
+
+function drawClick(x, y, pulse) {
+  if (!x || !y) return;
+  ctx.strokeStyle = `rgba(34, 211, 238, ${0.9 - pulse * 0.45})`;
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.arc(x, y, 18 + pulse * 18, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(34, 211, 238, 0.9)';
+  ctx.beginPath();
+  ctx.arc(x, y, 5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawImageStep(step, elapsed, duration) {
+  const img = images[step[1]];
+  ctx.drawImage(img, 0, 0, W, H);
+  drawLabel(step[2]);
+  const pulse = Math.min(1, elapsed / Math.max(1, duration));
+  drawClick(step[3], step[4], pulse);
+}
+
+function drawClipStep(elapsed, duration) {
+  ctx.fillStyle = '#030712';
+  ctx.fillRect(0, 0, W, H);
+  const videoW = 1040;
+  const videoH = 585;
+  const x = (W - videoW) / 2;
+  const y = 56;
+  ctx.drawImage(clip, x, y, videoW, videoH);
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(x, y, videoW, videoH);
+  drawLabel('Actual dataset clip used as a few-shot fall example');
+}
+
+async function loadImages() {
+  await Promise.all(steps.filter(s => s[0] === 'image').map(step => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => { images[step[1]] = img; resolve(); };
+    img.onerror = reject;
+    img.src = step[1];
+  })));
+}
+
+async function runStep(step, seconds) {
+  const start = performance.now();
+  if (step[0] === 'clip') {
+    clip.currentTime = 0;
+    await clip.play().catch(() => {});
+  }
+  return new Promise(resolve => {
+    function frame(now) {
+      const elapsed = (now - start) / 1000;
+      if (step[0] === 'clip') drawClipStep(elapsed, seconds);
+      else drawImageStep(step, elapsed, seconds);
+      if (elapsed < seconds) requestAnimationFrame(frame);
+      else {
+        if (step[0] === 'clip') clip.pause();
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+async function record() {
+  await loadImages();
+  await new Promise(resolve => {
+    if (clip.readyState >= 2) resolve();
+    else clip.onloadeddata = resolve;
+  });
+  const stream = canvas.captureStream(30);
+  const recorder = new MediaRecorder(stream, {
+    mimeType: 'video/webm;codecs=vp9',
+    videoBitsPerSecond: 4500000
+  });
+  const chunks = [];
+  recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
+  recorder.start(1000);
+  for (const step of steps) {
+    await runStep(step, step[0] === 'clip' ? 5 : 2.5);
+  }
+  recorder.stop();
+  await new Promise(resolve => recorder.onstop = resolve);
+  const blob = new Blob(chunks, { type: 'video/webm' });
+  const dataUrl = await new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+  document.getElementById('recordingData').value = dataUrl;
+  const url = URL.createObjectURL(blob);
+  statusEl.innerHTML = `Recording complete. <a href="${url}" download="adaptive_learning_real_ui_actions.webm">Download WebM</a>`;
+}
+
+record().catch(error => {
+  console.error(error);
+  statusEl.textContent = `Recording failed: ${error.message}`;
+});
+</script>
+</body>
+</html>

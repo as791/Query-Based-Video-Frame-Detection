@@ -1,0 +1,122 @@
+{
+  "033d8099-ae49-4903-8e0b-fb389ac5693c": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_2.mp4",
+    "source_file": "NTU_fight0146_fall_2.mp4"
+  },
+  "0b10b155-99e2-49eb-89a0-20d87b8592c5": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0142_fall_1.mp4",
+    "source_file": "NTU_fight0142_fall_1.mp4"
+  },
+  "1aa4efe3-734b-48ef-9237-5e5b31ba3a3e": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0180_fall_1.mp4",
+    "source_file": "NTU_fight0180_fall_1.mp4"
+  },
+  "294c2fc2-145d-4245-ab2b-7a758b4a11ee": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0095_fall_1.mp4",
+    "source_file": "NTU_fight0095_fall_1.mp4"
+  },
+  "38ae271f-8f47-49fc-83cd-50ca52750a25": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0069_fall_1.mp4",
+    "source_file": "NTU_fight0069_fall_1.mp4"
+  },
+  "41e829e5-f5c9-4570-9eb6-3231e736cdc2": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0105_fall_1.mp4",
+    "source_file": "NTU_fight0105_fall_1.mp4"
+  },
+  "4a19cdc3-ae36-45aa-b278-8d1df6d86370": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0036_fall_1.mp4",
+    "source_file": "NTU_fight0036_fall_1.mp4"
+  },
+  "4dab1349-28c0-4abd-b2f8-68b2b85840e5": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0048_fall_1.mp4",
+    "source_file": "NTU_fight0048_fall_1.mp4"
+  },
+  "5b2a9176-0a49-42c3-a17b-97b9ca816f73": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0062_fall_1.mp4",
+    "source_file": "NTU_fight0062_fall_1.mp4"
+  },
+  "7b9cfd13-ca38-4953-9f96-fd01a0d93c53": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_1.mp4",
+    "source_file": "NTU_fight0003_fall_1.mp4"
+  },
+  "93d1bedc-6d67-4d80-968f-5ff5059e12b8": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0197_fall_1.mp4",
+    "source_file": "NTU_fight0197_fall_1.mp4"
+  },
+  "9b1545ac-24bc-4408-b51a-4b3c1a2e158a": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_2.mp4",
+    "source_file": "NTU_fight0003_fall_2.mp4"
+  },
+  "b0961882-dd7f-40b3-a9f4-efbda2608d59": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_1.mp4",
+    "source_file": "NTU_fight0146_fall_1.mp4"
+  },
+  "b2f51ade-325b-4460-a5b2-c645a947328b": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0009_fall_1.mp4",
+    "source_file": "NTU_fight0009_fall_1.mp4"
+  },
+  "ba9dda04-6feb-47ea-9a87-01e17b2e96bf": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0172_fall_1.mp4",
+    "source_file": "NTU_fight0172_fall_1.mp4"
+  },
+  "be1d46e7-c60c-4a43-b3ba-e050b91bf804": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0092_fall_1.mp4",
+    "source_file": "NTU_fight0092_fall_1.mp4"
+  },
+  "bf5eeaf4-04e9-41b8-ac84-43596ad9f40e": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0200_fall_1.mp4",
+    "source_file": "NTU_fight0200_fall_1.mp4"
+  },
+  "cebe7fe5-518d-492f-b99f-c76981805759": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0023_fall_1.mp4",
+    "source_file": "NTU_fight0023_fall_1.mp4"
+  },
+  "ef41d939-cba0-4019-be6f-caa1e217659e": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0008_fall_1.mp4",
+    "source_file": "NTU_fight0008_fall_1.mp4"
+  },
+  "f62517c2-6823-4eb9-aff3-c6c40d53fc13": {
+    "benchmark_run_id": "taxonomy-smoke-20d-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0114_fall_1.mp4",
+    "source_file": "NTU_fight0114_fall_1.mp4"
+  }
+}

@@ -45,6 +45,14 @@ aws:
 
 searchServiceUrl: ${SEARCH_SERVICE_URL:http://host.docker.internal:8000/search}
 
+search:
+  llm-rerank:
+    enabled: ${SEARCH_LLM_RERANK_ENABLED:true}
+  candidates:
+    chunk-limit: ${SEARCH_CANDIDATES_CHUNK_LIMIT:100}
+    frame-limit: ${SEARCH_CANDIDATES_FRAME_LIMIT:160}
+    action-limit: ${SEARCH_CANDIDATES_ACTION_LIMIT:160}
+
 kms:
   key-alias-prefix: ${KMS_KEY_ALIAS_PREFIX:alias/vvault/user/}
 
@@ -57,3 +65,8 @@ qdrant:
 vlm:
   url: ${VLM_URL:http://host.docker.internal:11434}
   model: ${VLM_MODEL:qwen2.5vl:7b}
+
+benchmark:
+  auth:
+    enabled: ${BENCHMARK_AUTH_ENABLED:false}
+    google-sub: ${BENCHMARK_GOOGLE_SUB:}

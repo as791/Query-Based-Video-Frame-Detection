@@ -1,0 +1,57 @@
+{
+  "gun": {
+    "average_precision": 1.0,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "query": "a person gun",
+    "recall@1": 1.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0,
+    "relevant_total": 1
+  },
+  "hit": {
+    "average_precision": 1.0,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "query": "a person hit",
+    "recall@1": 1.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0,
+    "relevant_total": 1
+  },
+  "kick": {
+    "average_precision": 0.25,
+    "first_rank": 4,
+    "mrr": 0.25,
+    "precision@5": 0.2,
+    "query": "a person kick",
+    "recall@1": 0.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0,
+    "relevant_total": 1
+  },
+  "struggle": {
+    "average_precision": 0.2,
+    "first_rank": 5,
+    "mrr": 0.2,
+    "precision@5": 0.2,
+    "query": "a person struggle",
+    "recall@1": 0.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0,
+    "relevant_total": 1
+  },
+  "throw": {
+    "average_precision": 0.3333,
+    "first_rank": 3,
+    "mrr": 0.3333,
+    "precision@5": 0.2,
+    "query": "a person throw",
+    "recall@1": 0.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0,
+    "relevant_total": 1
+  }
+}

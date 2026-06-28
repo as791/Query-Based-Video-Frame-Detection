@@ -4,6 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
+import org.redisson.api.RTopic;
+import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -21,13 +26,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -38,10 +48,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     private final UserRepository userRepository;
     private final ChatSessionRepository chatSessionRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final ChatUserStateRepository chatUserStateRepository;
     private final QdrantRestClient qdrantClient;
     private final EmbedderRestClient embedderClient;
+    private final RedissonClient redissonClient;
 
     private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final Map<String, Set<WebSocketSession>> socketsBySession = new ConcurrentHashMap<>();
+    private final Map<WebSocketSession, Set<String>> sessionsBySocket = new ConcurrentHashMap<>();
+    private final Map<String, Integer> topicListenerIds = new ConcurrentHashMap<>();
 
     @Value("${vlm.url:http://host.docker.internal:11434}")
     private String vlmUrl;
@@ -69,11 +84,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             case "ping" -> sendEvent(socket, "pong", Map.of("ts", Instant.now().toString()));
             case "session.create" -> createSession(socket, user, body);
             case "session.list" -> listSessions(socket, user);
+            case "session.activate" -> activateSession(socket, user, body);
+            case "session.subscribe" -> subscribeSession(socket, user, body);
             case "messages.list" -> listMessages(socket, user, body);
             case "message.send" -> executor.submit(() -> sendMessage(socket, user, body));
             case "message.cancel" -> sendEvent(socket, "assistant.error", Map.of("message", "Cancel is not available in this local build yet."));
             default -> sendEvent(socket, "assistant.error", Map.of("message", "Unknown message type: " + type));
         }
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        unsubscribeSocket(session);
     }
 
     private void createSession(WebSocketSession socket, User user, Map<String, Object> body) throws IOException {
@@ -83,6 +105,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         String title = string(body.get("title"));
         if (!title.isBlank()) session.setTitle(limit(title, 80));
         chatSessionRepository.save(session);
+        activateUserSession(user, session.getId());
         sendEvent(socket, "session.created", Map.of("session", sessionDto(session)));
     }
 
@@ -91,27 +114,42 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                 .stream()
                 .map(this::sessionDto)
                 .toList();
-        sendEvent(socket, "session.listed", Map.of("sessions", sessions));
+        sendEvent(socket, "session.listed", Map.of(
+                "sessions", sessions,
+                "activeSessionId", activeSessionId(user)));
+    }
+
+    private void activateSession(WebSocketSession socket, User user, Map<String, Object> body) throws IOException {
+        ChatSession session = requireSession(user, string(body.get("sessionId")));
+        activateUserSession(user, session.getId());
+        sendEvent(socket, "session.activated", Map.of("session", sessionDto(session)));
+    }
+
+    private void subscribeSession(WebSocketSession socket, User user, Map<String, Object> body) throws IOException {
+        ChatSession session = requireSession(user, string(body.get("sessionId")));
+        activateUserSession(user, session.getId());
+        subscribeSocket(socket, session.getId());
+        sendEvent(socket, "session.subscribed", Map.of("sessionId", session.getId()));
     }
 
     private void listMessages(WebSocketSession socket, User user, Map<String, Object> body) throws IOException {
         ChatSession session = requireSession(user, string(body.get("sessionId")));
-        List<Map<String, Object>> messages = chatMessageRepository.findBySessionIdOrderBySeqAsc(session.getId())
-                .stream()
-                .map(this::messageDto)
-                .toList();
+        activateUserSession(user, session.getId());
+        List<Map<String, Object>> messages = messagesWithStreamingState(session.getId());
         sendEvent(socket, "messages.listed", Map.of("sessionId", session.getId(), "messages", messages));
     }
 
     private void sendMessage(WebSocketSession socket, User user, Map<String, Object> body) {
         String clientMessageId = string(body.get("clientMessageId"));
+        RLock streamLock = null;
         try {
             if (!clientMessageId.isBlank()) {
                 Optional<ChatMessage> duplicate = chatMessageRepository.findByUserIdAndClientMessageIdAndRole(user.getId(), clientMessageId, "user");
                 if (duplicate.isPresent()) {
-                    sendEvent(socket, "assistant.error", Map.of(
-                            "clientMessageId", clientMessageId,
-                            "message", "Duplicate message ignored."));
+                    String sessionId = duplicate.get().getSessionId();
+                    sendEvent(socket, "messages.listed", Map.of(
+                            "sessionId", sessionId,
+                            "messages", messagesWithStreamingState(sessionId)));
                     return;
                 }
             }
@@ -123,6 +161,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             }
 
             ChatSession session = getOrCreateSession(user, body, query);
+            activateUserSession(user, session.getId());
+            subscribeSocket(socket, session.getId());
+
+            streamLock = redissonClient.getLock(streamLockKey(session.getId()));
+            if (!streamLock.tryLock(0, 10, TimeUnit.MINUTES)) {
+                publishSessionEvent(session.getId(), "assistant.error", Map.of(
+                        "sessionId", session.getId(),
+                        "clientMessageId", clientMessageId,
+                        "message", "Assistant response already in progress for this chat."));
+                return;
+            }
+
             long nextSeq = chatMessageRepository.countBySessionId(session.getId()) + 1;
             ChatMessage userMessage = new ChatMessage();
             userMessage.setSessionId(session.getId());
@@ -144,7 +194,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             session.setUpdatedAt(Instant.now());
             chatSessionRepository.save(session);
 
-            sendEvent(socket, "message.started", Map.of(
+            publishSessionEvent(session.getId(), "message.started", Map.of(
+                    "sessionId", session.getId(),
                     "session", sessionDto(session),
                     "userMessage", messageDto(userMessage),
                     "assistantMessage", messageDto(assistantMessage),
@@ -153,24 +204,28 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             List<Double> queryVector = embedderClient.embedText(query);
             List<Map<String, Object>> chunks = qdrantClient.searchChunks(queryVector, user.getId(), session.getVideoId(), 10);
             List<Map<String, Object>> sources = sourcesFromChunks(chunks);
-            sendEvent(socket, "assistant.sources", Map.of(
+            publishSessionEvent(session.getId(), "assistant.sources", Map.of(
                     "sessionId", session.getId(),
                     "messageId", assistantMessage.getId(),
+                    "clientMessageId", clientMessageId,
                     "sources", sources));
 
             AtomicLong eventSeq = new AtomicLong(0);
+            AtomicInteger checkpointCounter = new AtomicInteger(0);
             StringBuilder answer = new StringBuilder();
-            boolean streamedFromVlm = streamFromVlm(socket, session, assistantMessage, clientMessageId, query, chunks, answer, eventSeq);
+            saveStreamingState(session.getId(), assistantMessage.getId(), answer.toString());
+            boolean streamedFromVlm = streamFromVlm(session, assistantMessage, clientMessageId, query, chunks, answer, eventSeq, checkpointCounter);
             if (!streamedFromVlm) {
                 String fallback = fallbackAnswer(query, chunks);
-                streamText(socket, session, assistantMessage, clientMessageId, fallback, answer, eventSeq);
+                streamText(session, assistantMessage, clientMessageId, fallback, answer, eventSeq, checkpointCounter);
             }
 
             assistantMessage.setContent(answer.toString());
             assistantMessage.setSourcesJson(objectMapper.writeValueAsString(sources));
             assistantMessage.setStatus("complete");
             chatMessageRepository.save(assistantMessage);
-            sendEvent(socket, "assistant.completed", Map.of(
+            clearStreamingState(session.getId());
+            publishSessionEvent(session.getId(), "assistant.completed", Map.of(
                     "sessionId", session.getId(),
                     "messageId", assistantMessage.getId(),
                     "clientMessageId", clientMessageId,
@@ -183,18 +238,22 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                         "message", e.getMessage() == null ? "Chat failed" : e.getMessage()));
             } catch (IOException ignored) {
             }
+        } finally {
+            if (streamLock != null && streamLock.isHeldByCurrentThread()) {
+                streamLock.unlock();
+            }
         }
     }
 
     private boolean streamFromVlm(
-            WebSocketSession socket,
             ChatSession session,
             ChatMessage assistantMessage,
             String clientMessageId,
             String query,
             List<Map<String, Object>> chunks,
             StringBuilder answer,
-            AtomicLong eventSeq) {
+            AtomicLong eventSeq,
+            AtomicInteger checkpointCounter) {
         try {
             String requestBody = objectMapper.writeValueAsString(Map.of(
                     "model", vlmModel,
@@ -221,8 +280,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
                     if ("[DONE]".equals(data)) break;
                     String delta = objectMapper.readTree(data).path("choices").path(0).path("delta").path("content").asText("");
                     if (!delta.isBlank()) {
-                        sendDelta(socket, session.getId(), assistantMessage.getId(), clientMessageId, delta, eventSeq.incrementAndGet());
-                        answer.append(delta);
+                        publishDelta(session, assistantMessage, clientMessageId, delta, answer, eventSeq, checkpointCounter);
                     }
                 }
             }
@@ -234,30 +292,43 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void streamText(
-            WebSocketSession socket,
             ChatSession session,
             ChatMessage assistantMessage,
             String clientMessageId,
             String text,
             StringBuilder answer,
-            AtomicLong eventSeq) throws IOException {
+            AtomicLong eventSeq,
+            AtomicInteger checkpointCounter) throws IOException {
         int index = 0;
         while (index < text.length()) {
             int end = Math.min(index + 96, text.length());
             String delta = text.substring(index, end);
-            sendDelta(socket, session.getId(), assistantMessage.getId(), clientMessageId, delta, eventSeq.incrementAndGet());
-            answer.append(delta);
+            publishDelta(session, assistantMessage, clientMessageId, delta, answer, eventSeq, checkpointCounter);
             index = end;
         }
     }
 
-    private void sendDelta(WebSocketSession socket, String sessionId, String messageId, String clientMessageId, String delta, long seq) throws IOException {
-        sendEvent(socket, "assistant.delta", Map.of(
-                "sessionId", sessionId,
-                "messageId", messageId,
+    private void publishDelta(
+            ChatSession session,
+            ChatMessage assistantMessage,
+            String clientMessageId,
+            String delta,
+            StringBuilder answer,
+            AtomicLong eventSeq,
+            AtomicInteger checkpointCounter) throws IOException {
+        answer.append(delta);
+        assistantMessage.setContent(answer.toString());
+        assistantMessage.setStatus("streaming");
+        saveStreamingState(session.getId(), assistantMessage.getId(), answer.toString());
+        if (checkpointCounter.incrementAndGet() % 5 == 0) {
+            chatMessageRepository.save(assistantMessage);
+        }
+        publishSessionEvent(session.getId(), "assistant.delta", Map.of(
+                "sessionId", session.getId(),
+                "messageId", assistantMessage.getId(),
                 "clientMessageId", clientMessageId,
                 "delta", delta,
-                "seq", seq));
+                "seq", eventSeq.incrementAndGet()));
     }
 
     private ChatSession getOrCreateSession(User user, Map<String, Object> body, String query) {
@@ -269,7 +340,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         session.setUserId(user.getId());
         session.setVideoId(blankToNull(string(body.get("videoId"))));
         session.setTitle(limit(query, 60));
-        return chatSessionRepository.save(session);
+        ChatSession saved = chatSessionRepository.save(session);
+        activateUserSession(user, saved.getId());
+        return saved;
     }
 
     private ChatSession requireSession(User user, String sessionId) {
@@ -288,6 +361,128 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
         throw new IllegalArgumentException("Unauthorized");
     }
+
+    private void activateUserSession(User user, String sessionId) {
+        ChatUserState state = chatUserStateRepository.findById(user.getId()).orElseGet(() -> {
+            ChatUserState next = new ChatUserState();
+            next.setUserId(user.getId());
+            return next;
+        });
+        state.setActiveSessionId(sessionId);
+        state.setUpdatedAt(Instant.now());
+        chatUserStateRepository.save(state);
+    }
+
+    private String activeSessionId(User user) {
+        return chatUserStateRepository.findById(user.getId())
+                .map(ChatUserState::getActiveSessionId)
+                .orElse("");
+    }
+
+    private List<Map<String, Object>> messagesWithStreamingState(String sessionId) {
+        List<Map<String, Object>> messages = chatMessageRepository.findBySessionIdOrderBySeqAsc(sessionId)
+                .stream()
+                .map(this::messageDto)
+                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+        StreamingState streamingState = streamingState(sessionId);
+        if (streamingState == null) return messages;
+        for (Map<String, Object> message : messages) {
+            if (streamingState.messageId().equals(string(message.get("id")))) {
+                message.put("content", streamingState.content());
+                message.put("status", "streaming");
+                return messages;
+            }
+        }
+        return messages;
+    }
+
+    private void subscribeSocket(WebSocketSession socket, String sessionId) {
+        sessionsBySocket.computeIfAbsent(socket, key -> ConcurrentHashMap.newKeySet()).add(sessionId);
+        socketsBySession.computeIfAbsent(sessionId, key -> ConcurrentHashMap.newKeySet()).add(socket);
+        topicListenerIds.computeIfAbsent(sessionId, this::registerTopicListener);
+    }
+
+    private int registerTopicListener(String sessionId) {
+        RTopic topic = redissonClient.getTopic(topicName(sessionId), StringCodec.INSTANCE);
+        return topic.addListener(String.class, (channel, message) -> fanOutSessionEvent(sessionId, message));
+    }
+
+    private void unsubscribeSocket(WebSocketSession socket) {
+        Set<String> sessionIds = sessionsBySocket.remove(socket);
+        if (sessionIds == null) return;
+        for (String sessionId : sessionIds) {
+            Set<WebSocketSession> sockets = socketsBySession.get(sessionId);
+            if (sockets == null) continue;
+            sockets.remove(socket);
+            if (sockets.isEmpty()) {
+                socketsBySession.remove(sessionId);
+                Integer listenerId = topicListenerIds.remove(sessionId);
+                if (listenerId != null) {
+                    redissonClient.getTopic(topicName(sessionId), StringCodec.INSTANCE).removeListener(listenerId);
+                }
+            }
+        }
+    }
+
+    private void fanOutSessionEvent(String sessionId, String message) {
+        Set<WebSocketSession> sockets = socketsBySession.getOrDefault(sessionId, Collections.emptySet());
+        for (WebSocketSession socket : sockets) {
+            try {
+                if (socket.isOpen()) {
+                    synchronized (socket) {
+                        if (socket.isOpen()) {
+                            socket.sendMessage(new TextMessage(message));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.debug("Failed to fan out chat event for session {}", sessionId, e);
+            }
+        }
+    }
+
+    private void publishSessionEvent(String sessionId, String type, Map<String, ?> fields) throws IOException {
+        Map<String, Object> event = new LinkedHashMap<>();
+        event.put("type", type);
+        event.putAll(fields);
+        redissonClient.getTopic(topicName(sessionId), StringCodec.INSTANCE)
+                .publish(objectMapper.writeValueAsString(event));
+    }
+
+    private void saveStreamingState(String sessionId, String messageId, String content) throws IOException {
+        StreamingState state = new StreamingState(messageId, content == null ? "" : content);
+        RBucket<String> bucket = redissonClient.getBucket(streamStateKey(sessionId), StringCodec.INSTANCE);
+        bucket.set(objectMapper.writeValueAsString(state), 10, TimeUnit.MINUTES);
+    }
+
+    private StreamingState streamingState(String sessionId) {
+        try {
+            String raw = redissonClient.<String>getBucket(streamStateKey(sessionId), StringCodec.INSTANCE).get();
+            if (raw == null || raw.isBlank()) return null;
+            return objectMapper.readValue(raw, StreamingState.class);
+        } catch (Exception e) {
+            log.debug("Could not read streaming state for session {}", sessionId, e);
+            return null;
+        }
+    }
+
+    private void clearStreamingState(String sessionId) {
+        redissonClient.getBucket(streamStateKey(sessionId), StringCodec.INSTANCE).delete();
+    }
+
+    private String topicName(String sessionId) {
+        return "chat:session:" + sessionId + ":events";
+    }
+
+    private String streamStateKey(String sessionId) {
+        return "chat:session:" + sessionId + ":stream-state";
+    }
+
+    private String streamLockKey(String sessionId) {
+        return "chat:session:" + sessionId + ":stream-lock";
+    }
+
+    private record StreamingState(String messageId, String content) {}
 
     private String contextFromChunks(List<Map<String, Object>> chunks) {
         StringBuilder context = new StringBuilder();

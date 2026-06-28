@@ -1,0 +1,44 @@
+{
+  "5d3fcec0-dd38-4758-a13f-6f8082a3d849": {
+    "benchmark_run_id": "domain-1781870219-motion_posture-eval",
+    "domain_id": "motion_posture-seeded-domain-1781870219",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_2.mp4",
+    "source_file": "NTU_fight0003_fall_2.mp4"
+  },
+  "6e8975d7-9563-4ead-a160-12d3547582d0": {
+    "benchmark_run_id": "domain-1781870219-motion_posture-eval",
+    "domain_id": "motion_posture-seeded-domain-1781870219",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse004_stand_2.mp4",
+    "source_file": "UCFCRIME_Abuse004_stand_2.mp4"
+  },
+  "7f6f9a4b-a528-49ee-9938-d111a82a5f65": {
+    "benchmark_run_id": "domain-1781870219-motion_posture-eval",
+    "domain_id": "motion_posture-seeded-domain-1781870219",
+    "label": "lyingdown",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/lying_down/NTU_fight0054_lying_down_1.mp4",
+    "source_file": "NTU_fight0054_lying_down_1.mp4"
+  },
+  "89cfd602-7231-40f8-873a-5ddf5640d884": {
+    "benchmark_run_id": "domain-1781870219-motion_posture-eval",
+    "domain_id": "motion_posture-seeded-domain-1781870219",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0046_run_1.mp4",
+    "source_file": "NTU_fight0046_run_1.mp4"
+  },
+  "96d99288-3ea2-4613-a489-f808839ff779": {
+    "benchmark_run_id": "domain-1781870219-motion_posture-eval",
+    "domain_id": "motion_posture-seeded-domain-1781870219",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse007_walk_2.mp4",
+    "source_file": "UCFCRIME_Abuse007_walk_2.mp4"
+  },
+  "9afaf961-3f0a-48a8-87a2-c6cd5d4760d5": {
+    "benchmark_run_id": "domain-1781870219-motion_posture-eval",
+    "domain_id": "motion_posture-seeded-domain-1781870219",
+    "label": "sit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sit/NTU_fight0030_sit_1.mp4",
+    "source_file": "NTU_fight0030_sit_1.mp4"
+  }
+}

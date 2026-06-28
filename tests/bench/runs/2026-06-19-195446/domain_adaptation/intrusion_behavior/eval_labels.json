@@ -1,0 +1,177 @@
+{
+  "0175dc01-ee7f-4e58-b658-0247fd81793b": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0142_run_1.mp4",
+    "source_file": "NTU_fight0142_run_1.mp4"
+  },
+  "02eb6d2f-ea3c-4b43-951c-52e8ea901722": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary017_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary017_grab_1.mp4"
+  },
+  "0d3193d3-789d-471a-aaff-3c3323456caf": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary019_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary019_grab_1.mp4"
+  },
+  "1fd33771-428a-4412-86f0-2a31f22bd8f9": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse014_stand_1.mp4",
+    "source_file": "UCFCRIME_Abuse014_stand_1.mp4"
+  },
+  "2dbd6cf1-b38f-450c-ad6e-1611e1ff9555": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary071_sneak_1.mp4",
+    "source_file": "UCFCRIME_Burglary071_sneak_1.mp4"
+  },
+  "396edf3f-b9f0-455c-99fa-dfce83f20316": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse008_stand_2.mp4",
+    "source_file": "UCFCRIME_Abuse008_stand_2.mp4"
+  },
+  "5809ea70-b9d5-4850-a43d-125f41848424": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary024_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary024_grab_1.mp4"
+  },
+  "5ceb2ea8-31d5-4e18-b003-2ea20f0d6cfb": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse028_stand_1.mp4",
+    "source_file": "UCFCRIME_Abuse028_stand_1.mp4"
+  },
+  "678cc99c-b57e-4ab9-bf64-c4ee459914b4": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary084_sneak_1.mp4",
+    "source_file": "UCFCRIME_Burglary084_sneak_1.mp4"
+  },
+  "7da72b7e-c872-4f7c-9ed6-7405e7730ed7": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse022_walk_1.mp4",
+    "source_file": "UCFCRIME_Abuse022_walk_1.mp4"
+  },
+  "7eb3beee-5f27-4230-9356-c88f5dd3b225": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary079_sneak_1.mp4",
+    "source_file": "UCFCRIME_Burglary079_sneak_1.mp4"
+  },
+  "7fa57c0b-fb66-43d8-b2b8-e80df00669a5": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse030_stand_1.mp4",
+    "source_file": "UCFCRIME_Abuse030_stand_1.mp4"
+  },
+  "819b2ce2-fc8b-4334-9819-2cdfd06752f8": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary020_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary020_grab_1.mp4"
+  },
+  "82fe63b0-44eb-4594-a97b-0d75f0e54771": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0160_run_1.mp4",
+    "source_file": "NTU_fight0160_run_1.mp4"
+  },
+  "8b8e260d-01fd-4aa4-812b-7f2885085087": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse028_walk_3.mp4",
+    "source_file": "UCFCRIME_Abuse028_walk_3.mp4"
+  },
+  "8fc4e58c-37ea-43fc-98d5-a39ee1063a46": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary023_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary023_grab_1.mp4"
+  },
+  "9b593fb5-1b18-4ca3-922e-b411cff4f9ff": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse028_walk_1.mp4",
+    "source_file": "UCFCRIME_Abuse028_walk_1.mp4"
+  },
+  "a104f5f6-fb8d-4332-961c-e6e4deb8311b": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse018_walk_1.mp4",
+    "source_file": "UCFCRIME_Abuse018_walk_1.mp4"
+  },
+  "a5d9c204-ef3f-42a8-9cd2-caf753877ffa": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse028_walk_2.mp4",
+    "source_file": "UCFCRIME_Abuse028_walk_2.mp4"
+  },
+  "ae36c2d7-9992-4f04-9b10-3147f71f5afa": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0085_run_2.mp4",
+    "source_file": "NTU_fight0085_run_2.mp4"
+  },
+  "ba3cbcc3-6268-4c99-b23b-cf8e00b9bb42": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0098_run_1.mp4",
+    "source_file": "NTU_fight0098_run_1.mp4"
+  },
+  "d3cf0d8e-466e-4615-8aff-b488a8df8249": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary071_sneak_2.mp4",
+    "source_file": "UCFCRIME_Burglary071_sneak_2.mp4"
+  },
+  "eb4805cc-de1b-4c13-8a21-417b33613fe6": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse018_stand_1.mp4",
+    "source_file": "UCFCRIME_Abuse018_stand_1.mp4"
+  },
+  "fa31e983-3ee6-4569-bf8e-95b96f5805af": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0169_run_1.mp4",
+    "source_file": "NTU_fight0169_run_1.mp4"
+  },
+  "fb68af01-ab52-4f42-a4d6-34f85ba30f7c": {
+    "benchmark_run_id": "domain-1781879086-intrusion_behavior-eval",
+    "domain_id": "intrusion_behavior-seeded-domain-1781879086",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary064_sneak_4.mp4",
+    "source_file": "UCFCRIME_Burglary064_sneak_4.mp4"
+  }
+}

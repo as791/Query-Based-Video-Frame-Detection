@@ -97,6 +97,11 @@ body::before {
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28), 0 0 24px rgba(103, 232, 249, 0.12);
 }
 
+.frame-card-active {
+  border-color: rgba(103, 232, 249, 0.58);
+  box-shadow: 0 0 0 1px rgba(103, 232, 249, 0.12), 0 18px 48px rgba(0, 0, 0, 0.30);
+}
+
 .modal-nav {
   position: absolute;
   top: 50%;
@@ -152,6 +157,22 @@ body::before {
   padding: 0.16rem 0.46rem;
   font-size: 0.68rem;
   color: rgba(255, 255, 255, 0.68);
+}
+
+.match-chip {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  background: rgba(14, 165, 233, 0.08);
+  padding: 0.18rem 0.42rem;
+  font-size: 0.68rem;
+  line-height: 1rem;
+  color: rgba(224, 242, 254, 0.76);
 }
 
 .confidence-slider {

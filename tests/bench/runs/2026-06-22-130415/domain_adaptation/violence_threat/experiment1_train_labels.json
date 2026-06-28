@@ -1,0 +1,202 @@
+{
+  "22ca2af0-3d07-44f9-b7d4-c78b836f5e6f": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0009_hit_1.mp4",
+    "source_file": "NTU_fight0009_hit_1.mp4"
+  },
+  "287cf58f-8d8e-4e2f-a0cf-de9630777103": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/NTU_fight0172_gun_1.mp4",
+    "source_file": "NTU_fight0172_gun_1.mp4"
+  },
+  "2cb3f069-a9ef-406f-b07d-a7666cca2dbe": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0013_throw_1.mp4",
+    "source_file": "NTU_fight0013_throw_1.mp4"
+  },
+  "3495e7dd-04e3-44f6-add4-5ec971409c93": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/NTU_fight0008_struggle_2.mp4",
+    "source_file": "NTU_fight0008_struggle_2.mp4"
+  },
+  "372c5555-a44e-41f8-b901-4e32c8b67880": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/NTU_fight0012_struggle_1.mp4",
+    "source_file": "NTU_fight0012_struggle_1.mp4"
+  },
+  "40b73b9f-0ae5-4b58-abfe-6796e6bdcb5b": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0039_kick_1.mp4",
+    "source_file": "NTU_fight0039_kick_1.mp4"
+  },
+  "4402de1f-0d05-4ff3-84a8-caf47fc531dd": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0007_hit_1.mp4",
+    "source_file": "NTU_fight0007_hit_1.mp4"
+  },
+  "4fe136a9-a98e-4a5c-b5a8-1a80adf12d14": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/NTU_fight0160_gun_1.mp4",
+    "source_file": "NTU_fight0160_gun_1.mp4"
+  },
+  "55fa4f98-b403-4adb-8118-ba337b736a21": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0050_kick_1.mp4",
+    "source_file": "NTU_fight0050_kick_1.mp4"
+  },
+  "5824325f-4c80-4168-b6f1-573b79dc2dc3": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/NTU_fight0042_gun_1.mp4",
+    "source_file": "NTU_fight0042_gun_1.mp4"
+  },
+  "641aba8e-fd48-4e84-bee1-ea0756e785ec": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/LIVELEAK_LiveLeak7_gun_1.mp4",
+    "source_file": "LIVELEAK_LiveLeak7_gun_1.mp4"
+  },
+  "6493652d-d347-4485-84ce-a7222babc867": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0030_throw_1.mp4",
+    "source_file": "NTU_fight0030_throw_1.mp4"
+  },
+  "7e1fcfb7-c3e3-419f-a18a-2c89d07e3a36": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0003_hit_1.mp4",
+    "source_file": "NTU_fight0003_hit_1.mp4"
+  },
+  "85db5acd-903d-4a19-92b0-8445daf0dc28": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0029_throw_1.mp4",
+    "source_file": "NTU_fight0029_throw_1.mp4"
+  },
+  "92fea682-7a57-47ce-bd06-d81fad27e03c": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0008_kick_1.mp4",
+    "source_file": "NTU_fight0008_kick_1.mp4"
+  },
+  "941c7d8d-ae9b-4600-b315-1afbd1453754": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0142_kick_1.mp4",
+    "source_file": "NTU_fight0142_kick_1.mp4"
+  },
+  "95274e3a-248d-4bdd-97ba-b7498017de12": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/NTU_fight0003_struggle_1.mp4",
+    "source_file": "NTU_fight0003_struggle_1.mp4"
+  },
+  "96ca954c-6734-4431-88f0-780164b672f1": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/LIVELEAK_LiveLeak7_gun_2.mp4",
+    "source_file": "LIVELEAK_LiveLeak7_gun_2.mp4"
+  },
+  "b2e59a02-ad5f-4894-9101-dbbccc92b7a2": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0029_throw_2.mp4",
+    "source_file": "NTU_fight0029_throw_2.mp4"
+  },
+  "bc046e11-ce0f-41fa-bed2-92e709304a52": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0142_kick_2.mp4",
+    "source_file": "NTU_fight0142_kick_2.mp4"
+  },
+  "c38c8b63-34ef-4d44-9034-dff2bc619ab1": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/NTU_fight0008_struggle_1.mp4",
+    "source_file": "NTU_fight0008_struggle_1.mp4"
+  },
+  "cba4d988-a0dc-4912-830e-5fc99da174d8": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/LIVELEAK_LiveLeak3_struggle_1.mp4",
+    "source_file": "LIVELEAK_LiveLeak3_struggle_1.mp4"
+  },
+  "e0725581-5ff7-4e65-bb06-ee8cf48f535e": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0008_hit_2.mp4",
+    "source_file": "NTU_fight0008_hit_2.mp4"
+  },
+  "ef294c9b-e5b5-4ac7-bb29-1ec1d50091e4": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0008_hit_1.mp4",
+    "source_file": "NTU_fight0008_hit_1.mp4"
+  },
+  "f49a5c15-5f0c-4257-9ffc-d3dcb76a21c5": {
+    "benchmark_run_id": "domain-1782113655-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1782113655",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0029_throw_3.mp4",
+    "source_file": "NTU_fight0029_throw_3.mp4"
+  }
+}

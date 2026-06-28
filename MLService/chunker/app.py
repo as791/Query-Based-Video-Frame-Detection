@@ -191,9 +191,14 @@ def process(msg_id, data, s3, r):
     video_id = data["video_id"]
     user_id = data["user_id"]
     tenant_id = data.get("tenant_id", "default")
+    domain_id = data.get("domain_id", "general")
     profile = data.get("profile", "general")
     s3_raw_path = data["s3_raw_path"]  # e.g. raw/default/{user_id}/{video_id}/original.mp4
     source_file = data.get("source_file", "video.mp4")
+    benchmark_run_id = data.get("benchmark_run_id", "")
+    few_shot_example = data.get("few_shot_example", "")
+    few_shot_label = data.get("few_shot_label", "")
+    few_shot_model_id = data.get("few_shot_model_id", "")
 
     with tempfile.TemporaryDirectory() as tmpdir:
         src = str(Path(tmpdir) / "original.mp4")
@@ -231,10 +236,15 @@ def process(msg_id, data, s3, r):
             "video_id": video_id,
             "user_id": user_id,
             "tenant_id": tenant_id,
+            "domain_id": domain_id,
             "profile": profile,
             "chunk_count": str(len(windows)),
             "source_file": source_file,
             "video_metadata_json": video_metadata_json,
+            "benchmark_run_id": benchmark_run_id,
+            "few_shot_example": few_shot_example,
+            "few_shot_label": few_shot_label,
+            "few_shot_model_id": few_shot_model_id,
         })
 
         for index, (start_sec, end_sec) in enumerate(windows):
@@ -257,9 +267,14 @@ def process(msg_id, data, s3, r):
                 "video_id": video_id,
                 "user_id": user_id,
                 "tenant_id": tenant_id,
+                "domain_id": domain_id,
                 "profile": profile,
                 "source_file": source_file,
                 "video_metadata_json": video_metadata_json,
+                "benchmark_run_id": benchmark_run_id,
+                "few_shot_example": few_shot_example,
+                "few_shot_label": few_shot_label,
+                "few_shot_model_id": few_shot_model_id,
                 "chunk_id": chunk_id,
                 "chunk_index": str(index),
                 "chunk_count": str(len(windows)),
@@ -279,11 +294,16 @@ def process(msg_id, data, s3, r):
             "video_id": video_id,
             "user_id": user_id,
             "tenant_id": tenant_id,
+            "domain_id": domain_id,
             "profile": profile,
             "chunk_count": str(len(chunks)),
             "chunks_json": json.dumps(chunks),
             "source_file": source_file,
             "video_metadata_json": video_metadata_json,
+            "benchmark_run_id": benchmark_run_id,
+            "few_shot_example": few_shot_example,
+            "few_shot_label": few_shot_label,
+            "few_shot_model_id": few_shot_model_id,
         })
 
     r.xack(STREAM, GROUP, msg_id)

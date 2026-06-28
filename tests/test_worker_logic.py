@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import importlib.util
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,16 +37,7 @@ def test_extractor_frame_time_is_absolute(monkeypatch, tmp_path):
     frame_dir = tmp_path / "frames"
     frame_dir.mkdir()
     for index in range(2):
-        (frame_dir / f"{index + 1:05d}.jpg").write_bytes(
-            b"\xff\xd8\xff\xe0\x00\x10JFIF\x00\x01\x01\x01\x00H\x00H\x00\x00\xff\xdb\x00C\x00"
-            b"\x08\x06\x06\x07\x06\x05\x08\x07\x07\x07\x09\x09\x08\x0a\x0c\x14\x0d\x0c\x0b"
-            b"\x0b\x0c\x19\x12\x13\x0f\x14\x1d\x1a\x1f\x1e\x1d\x1a\x1c\x1c $.' \",#\x1c"
-            b"\x1c(7),01444\x1f'9=82<.342\xff\xc0\x00\x11\x08\x00\x01\x00\x01\x03\x01\"\x00"
-            b"\x02\x11\x01\x03\x11\x01\xff\xc4\x00\x14\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00"
-            b"\x00\x00\x00\x00\x00\x00\x00\x07\xff\xc4\x00\x14\x10\x01\x00\x00\x00\x00\x00\x00"
-            b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xda\x00\x0c\x03\x01\x00\x02\x11\x03"
-            b"\x11\x00?\x00\xaa\xff\xd9"
-        )
+        Image.new("RGB", (1, 1), color=(index, index, index)).save(frame_dir / f"{index + 1:05d}.jpg")
     video = tmp_path / "chunk.mp4"
     video.write_bytes(b"fake")
 
@@ -55,3 +47,27 @@ def test_extractor_frame_time_is_absolute(monkeypatch, tmp_path):
 
     assert [frame[1] for frame in frames] == [7000, 8000]
     assert [frame[2] for frame in frames] == [0, 1000]
+
+
+def test_extractor_scores_action_labels_from_frame_embeddings(monkeypatch):
+    taxonomy = [
+        {"label": "fall", "description": "a person falling down"},
+        {"label": "gun", "description": "a person holding a gun"},
+        {"label": "hit", "description": "a person hitting another person"},
+    ]
+    monkeypatch.setattr(extractor, "_ACTION_TAXONOMY", taxonomy)
+    monkeypatch.setattr(extractor, "action_text_embeddings", lambda _, r=None: [
+        {"label": "fall", "embedding": [1.0, 0.0]},
+        {"label": "gun", "embedding": [0.0, 1.0]},
+        {"label": "hit", "embedding": [0.5, 0.5]},
+    ])
+
+    result = extractor.score_actions_from_embeddings(
+        frame_embeddings=[[0.9, 0.1], [1.0, 0.0]],
+        action_taxonomy=taxonomy,
+    )
+
+    assert result["action_top"] == "fall"
+    assert result["action_labels"][0] == "fall"
+    assert result["action_scores"]["fall"] == 1.0
+    assert result["action_confidence"] > 0

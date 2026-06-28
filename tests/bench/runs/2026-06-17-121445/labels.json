@@ -1,0 +1,122 @@
+{
+  "000b5215-b142-4222-9180-75df44abcbe6": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_2.mp4",
+    "source_file": "NTU_fight0003_fall_2.mp4"
+  },
+  "14c3ebac-f9af-4621-aef8-da2ca8607117": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0092_fall_1.mp4",
+    "source_file": "NTU_fight0092_fall_1.mp4"
+  },
+  "17371879-88a9-4d91-acdf-fa1eaee8edf3": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0062_fall_1.mp4",
+    "source_file": "NTU_fight0062_fall_1.mp4"
+  },
+  "19004f3d-f48f-430e-940e-8683bda4837a": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0142_fall_1.mp4",
+    "source_file": "NTU_fight0142_fall_1.mp4"
+  },
+  "227ef738-406c-4652-ac21-db96c8fa187e": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0023_fall_1.mp4",
+    "source_file": "NTU_fight0023_fall_1.mp4"
+  },
+  "32880dba-f128-4111-9dfe-2710735619f5": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0200_fall_1.mp4",
+    "source_file": "NTU_fight0200_fall_1.mp4"
+  },
+  "38e3b0ca-2e29-4d8a-a864-a9d567979a84": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0036_fall_1.mp4",
+    "source_file": "NTU_fight0036_fall_1.mp4"
+  },
+  "39dd47f3-dd81-4d5d-9271-d5287ddf2ed1": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0009_fall_1.mp4",
+    "source_file": "NTU_fight0009_fall_1.mp4"
+  },
+  "4739495a-7a7e-4105-b507-fce2a4f789a7": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0008_fall_1.mp4",
+    "source_file": "NTU_fight0008_fall_1.mp4"
+  },
+  "4e3ce586-2935-41a0-99fc-b0c046da222d": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0069_fall_1.mp4",
+    "source_file": "NTU_fight0069_fall_1.mp4"
+  },
+  "5a739234-cc85-497b-a846-a1fda95d6676": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0180_fall_1.mp4",
+    "source_file": "NTU_fight0180_fall_1.mp4"
+  },
+  "7834a71e-9bc4-45a0-8efa-e837bb99d375": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0048_fall_1.mp4",
+    "source_file": "NTU_fight0048_fall_1.mp4"
+  },
+  "7d9e5674-f22f-4286-a9e3-389a7adfbe1a": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0197_fall_1.mp4",
+    "source_file": "NTU_fight0197_fall_1.mp4"
+  },
+  "87e289b6-d008-4b68-ad82-ab225ab3bb6b": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0105_fall_1.mp4",
+    "source_file": "NTU_fight0105_fall_1.mp4"
+  },
+  "8c4a7900-ccbd-4246-8e80-f64a6f590336": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_1.mp4",
+    "source_file": "NTU_fight0146_fall_1.mp4"
+  },
+  "b9b80940-b879-46aa-a5bf-2d725a5a4210": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0114_fall_1.mp4",
+    "source_file": "NTU_fight0114_fall_1.mp4"
+  },
+  "c2f85bab-9df3-44d4-a0ff-c28970530182": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0095_fall_1.mp4",
+    "source_file": "NTU_fight0095_fall_1.mp4"
+  },
+  "d8cdbc84-324e-4287-9019-af910d2a6add": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_1.mp4",
+    "source_file": "NTU_fight0003_fall_1.mp4"
+  },
+  "e04e023e-6bdd-4f9a-b10f-532ecd56fe24": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0172_fall_1.mp4",
+    "source_file": "NTU_fight0172_fall_1.mp4"
+  },
+  "f6f19c8d-84de-47c1-bc08-d94e87013b1c": {
+    "benchmark_run_id": "taxonomy-smoke-20-20260617",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_2.mp4",
+    "source_file": "NTU_fight0146_fall_2.mp4"
+  }
+}

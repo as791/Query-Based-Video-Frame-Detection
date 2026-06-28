@@ -23,7 +23,8 @@ def ensure_collection(client, name, vector_size=768):
     else:
         print(f"Collection already exists: {name}")
 
-def create_indexes(client, name, keyword_fields, integer_fields):
+def create_indexes(client, name, keyword_fields, integer_fields, bool_fields=None):
+    bool_fields = bool_fields or []
     for field in keyword_fields:
         try:
             client.create_payload_index(
@@ -42,6 +43,15 @@ def create_indexes(client, name, keyword_fields, integer_fields):
             )
         except Exception as exc:
             print(f"Index {name}.{field} already exists or could not be created: {exc}")
+    for field in bool_fields:
+        try:
+            client.create_payload_index(
+                collection_name=name,
+                field_name=field,
+                field_schema=PayloadSchemaType.BOOL,
+            )
+        except Exception as exc:
+            print(f"Index {name}.{field} already exists or could not be created: {exc}")
     print(f"Indexes created for collection: {name}")
 
 def main():
@@ -52,20 +62,26 @@ def main():
     ensure_collection(client, "chunks")
     create_indexes(client, "chunks",
         keyword_fields=[
-            "user_id", "tenant_id", "video_id", "chunk_id", "profile",
+            "user_id", "tenant_id", "domain_id", "video_id", "chunk_id", "profile",
             "tags", "objects", "main_activity", "scene", "motion", "source_file",
+            "action_labels", "action_top", "benchmark_run_id",
+            "few_shot_label", "few_shot_model_id",
         ],
         integer_fields=["t_start_ms", "t_end_ms", "duration_ms", "width", "height"],
+        bool_fields=["few_shot_example"],
     )
 
     # frames collection — one vector per sampled frame inside a chunk
     ensure_collection(client, "frames")
     create_indexes(client, "frames",
         keyword_fields=[
-            "user_id", "tenant_id", "video_id", "chunk_id", "frame_id", "profile",
+            "user_id", "tenant_id", "domain_id", "video_id", "chunk_id", "frame_id", "profile",
             "tags", "objects", "main_activity", "scene", "motion", "source_file",
+            "action_labels", "action_top", "benchmark_run_id",
+            "few_shot_label", "few_shot_model_id",
         ],
         integer_fields=["t_ms", "duration_ms", "width", "height"],
+        bool_fields=["few_shot_example"],
     )
 
     print("Qdrant collections ready.")

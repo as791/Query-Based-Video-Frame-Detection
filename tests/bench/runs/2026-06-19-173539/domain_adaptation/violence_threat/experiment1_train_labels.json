@@ -1,0 +1,42 @@
+{
+  "18da6bc4-1ade-42a9-b1fe-408417b0645a": {
+    "benchmark_run_id": "domain-1781870739-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870739",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/LIVELEAK_LiveLeak7_gun_1.mp4",
+    "source_file": "LIVELEAK_LiveLeak7_gun_1.mp4"
+  },
+  "31b737c1-a774-46d9-898b-2d1a55e80964": {
+    "benchmark_run_id": "domain-1781870739-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870739",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0003_hit_1.mp4",
+    "source_file": "NTU_fight0003_hit_1.mp4"
+  },
+  "58587e7a-f3c5-4211-af7e-fead98cc750a": {
+    "benchmark_run_id": "domain-1781870739-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870739",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0008_kick_1.mp4",
+    "source_file": "NTU_fight0008_kick_1.mp4"
+  },
+  "c48ba700-a9e9-4422-a0a2-9be810efbcb5": {
+    "benchmark_run_id": "domain-1781870739-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870739",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0013_throw_1.mp4",
+    "source_file": "NTU_fight0013_throw_1.mp4"
+  },
+  "d8dea24e-8a35-4bd9-a952-4ff308eda6ee": {
+    "benchmark_run_id": "domain-1781870739-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870739",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/LIVELEAK_LiveLeak3_struggle_1.mp4",
+    "source_file": "LIVELEAK_LiveLeak3_struggle_1.mp4"
+  }
+}

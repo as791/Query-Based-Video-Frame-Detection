@@ -6,6 +6,8 @@ import clsx from 'clsx'
 const nav = [
   { href: '/library', label: 'Library', icon: '▤' },
   { href: '/ask', label: 'Ask', icon: '◎' },
+  { href: '/labels', label: 'Labels', icon: '#' },
+  { href: '/features', label: 'Features', icon: '+' },
 ]
 
 export default function Sidebar({ user }: { user: { name: string; email: string } }) {

@@ -1,0 +1,39 @@
+{
+  "intrusion_behavior": {
+    "eval_count": 5,
+    "labels": [
+      "sneak",
+      "grab",
+      "walk",
+      "run",
+      "stand"
+    ],
+    "missing_labels": [],
+    "train_count": 5
+  },
+  "motion_posture": {
+    "eval_count": 6,
+    "labels": [
+      "fall",
+      "lyingdown",
+      "sit",
+      "stand",
+      "walk",
+      "run"
+    ],
+    "missing_labels": [],
+    "train_count": 6
+  },
+  "violence_threat": {
+    "eval_count": 5,
+    "labels": [
+      "hit",
+      "kick",
+      "struggle",
+      "throw",
+      "gun"
+    ],
+    "missing_labels": [],
+    "train_count": 5
+  }
+}

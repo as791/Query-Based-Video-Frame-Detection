@@ -1,0 +1,68 @@
+{
+  "fall": {
+    "average_precision": 0.36,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "query": "a person fall",
+    "recall@1": 0.2,
+    "recall@20": 0.8,
+    "recall@5": 0.2,
+    "relevant_total": 5
+  },
+  "lyingdown": {
+    "average_precision": 0.555,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.4,
+    "query": "a person lying down",
+    "recall@1": 0.2,
+    "recall@20": 1.0,
+    "recall@5": 0.4,
+    "relevant_total": 5
+  },
+  "run": {
+    "average_precision": 0.0322,
+    "first_rank": 18,
+    "mrr": 0.0556,
+    "precision@5": 0.0,
+    "query": "a person run",
+    "recall@1": 0.0,
+    "recall@20": 0.4,
+    "recall@5": 0.0,
+    "relevant_total": 5
+  },
+  "sit": {
+    "average_precision": 0.3212,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "query": "a person sit",
+    "recall@1": 0.2,
+    "recall@20": 0.6,
+    "recall@5": 0.2,
+    "relevant_total": 5
+  },
+  "stand": {
+    "average_precision": 0.3511,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "query": "a person stand",
+    "recall@1": 0.2,
+    "recall@20": 0.8,
+    "recall@5": 0.2,
+    "relevant_total": 5
+  },
+  "walk": {
+    "average_precision": 0.2717,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 0.2,
+    "query": "a person walk",
+    "recall@1": 0.2,
+    "recall@20": 0.6,
+    "recall@5": 0.2,
+    "relevant_total": 5
+  }
+}

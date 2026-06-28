@@ -1,0 +1,57 @@
+{
+  "grab": {
+    "average_precision": 0.0,
+    "first_rank": 0,
+    "mrr": 0.0,
+    "precision@5": 0.0,
+    "query": "a person grab",
+    "recall@1": 0.0,
+    "recall@20": 0.0,
+    "recall@5": 0.0,
+    "relevant_total": 1
+  },
+  "run": {
+    "average_precision": 0.0,
+    "first_rank": 0,
+    "mrr": 0.0,
+    "precision@5": 0.0,
+    "query": "a person run",
+    "recall@1": 0.0,
+    "recall@20": 0.0,
+    "recall@5": 0.0,
+    "relevant_total": 1
+  },
+  "sneak": {
+    "average_precision": 0.0,
+    "first_rank": 0,
+    "mrr": 0.0,
+    "precision@5": 0.0,
+    "query": "a person sneak",
+    "recall@1": 0.0,
+    "recall@20": 0.0,
+    "recall@5": 0.0,
+    "relevant_total": 1
+  },
+  "stand": {
+    "average_precision": 0.0,
+    "first_rank": 0,
+    "mrr": 0.0,
+    "precision@5": 0.0,
+    "query": "a person stand",
+    "recall@1": 0.0,
+    "recall@20": 0.0,
+    "recall@5": 0.0,
+    "relevant_total": 1
+  },
+  "walk": {
+    "average_precision": 0.0,
+    "first_rank": 0,
+    "mrr": 0.0,
+    "precision@5": 0.0,
+    "query": "a person walk",
+    "recall@1": 0.0,
+    "recall@20": 0.0,
+    "recall@5": 0.0,
+    "relevant_total": 1
+  }
+}

@@ -45,6 +45,8 @@ public class VideoUploadController {
     private final AmazonS3 amazonS3;
     private final UserRepository userRepository;
     private final RedissonClient redissonClient;
+    private final FewShotLearningService fewShotLearningService;
+    private final DomainModelService domainModelService;
 
     @Value("${S3_BUCKET:stage-video-bucket}")
     private String bucket;
@@ -95,6 +97,9 @@ public class VideoUploadController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Map<String, String> upload(
             @RequestParam(defaultValue = "general") String profile,
+            @RequestParam(required = false, defaultValue = "") String benchmarkRunId,
+            @RequestParam(required = false, defaultValue = "") String fewShotLabel,
+            @RequestParam(required = false, defaultValue = "general") String domainId,
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal OAuth2User oAuth2User) {
 
@@ -118,7 +123,7 @@ public class VideoUploadController {
                 req.withSSEAwsKeyManagementParams(new SSEAwsKeyManagementParams(user.getKmsKeyArn()));
             }
             amazonS3.putObject(req);
-            publishUploadedEvent(videoId, user.getId(), profile, s3Key, file.getOriginalFilename());
+            publishUploadedEvent(videoId, user.getId(), profile, s3Key, file.getOriginalFilename(), benchmarkRunId, fewShotLabel, domainId);
             log.info("Uploaded video via backend for user={} video={}", user.getId(), videoId);
             return Map.of("videoId", videoId, "s3Key", s3Key, "status", "processing");
         } catch (IOException e) {
@@ -201,6 +206,9 @@ public class VideoUploadController {
         String uploadId = String.valueOf(body.get("uploadId"));
         String profile = String.valueOf(body.getOrDefault("profile", "general"));
         String sourceFile = String.valueOf(body.getOrDefault("sourceFile", "video.mp4"));
+        String benchmarkRunId = String.valueOf(body.getOrDefault("benchmarkRunId", ""));
+        String fewShotLabel = String.valueOf(body.getOrDefault("fewShotLabel", ""));
+        String domainId = String.valueOf(body.getOrDefault("domainId", "general"));
         validateOwnedKey(user, videoId, s3Key);
 
         @SuppressWarnings("unchecked")
@@ -216,7 +224,7 @@ public class VideoUploadController {
         }
         parts.sort(java.util.Comparator.comparingInt(PartETag::getPartNumber));
         amazonS3.completeMultipartUpload(new CompleteMultipartUploadRequest(bucket, s3Key, uploadId, parts));
-        publishUploadedEvent(videoId, user.getId(), profile, s3Key, sourceFile);
+        publishUploadedEvent(videoId, user.getId(), profile, s3Key, sourceFile, benchmarkRunId, fewShotLabel, domainId);
         return Map.of("videoId", videoId, "s3Key", s3Key, "status", "processing");
     }
 
@@ -243,6 +251,9 @@ public class VideoUploadController {
             @RequestParam(defaultValue = "general") String profile,
             @RequestParam String s3Key,
             @RequestParam(required = false, defaultValue = "video.mp4") String sourceFile,
+            @RequestParam(required = false, defaultValue = "") String benchmarkRunId,
+            @RequestParam(required = false, defaultValue = "") String fewShotLabel,
+            @RequestParam(required = false, defaultValue = "general") String domainId,
             @AuthenticationPrincipal OAuth2User oAuth2User) {
 
         if (oAuth2User == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -250,7 +261,8 @@ public class VideoUploadController {
         User user = userRepository.findByGoogleSub(oAuth2User.getAttribute("sub"))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        publishUploadedEvent(videoId, user.getId(), profile, s3Key, sourceFile);
+        validateOwnedKey(user, videoId, s3Key);
+        publishUploadedEvent(videoId, user.getId(), profile, s3Key, sourceFile, benchmarkRunId, fewShotLabel, domainId);
 
         log.info("Published video.uploaded for video={} user={}", videoId, user.getId());
         return Map.of("videoId", videoId, "status", "processing");
@@ -267,16 +279,29 @@ public class VideoUploadController {
         }
     }
 
-    private void publishUploadedEvent(String videoId, String userId, String profile, String s3Key, String sourceFile) {
+    private void publishUploadedEvent(String videoId, String userId, String profile, String s3Key, String sourceFile, String benchmarkRunId, String fewShotLabel, String domainId) {
         RStream<String, String> stream = redissonClient.getStream("pipeline.events", StringCodec.INSTANCE);
         Map<String, String> entries = new java.util.LinkedHashMap<>();
+        String normalizedFewShotLabel = fewShotLearningService.normalizeLabel(fewShotLabel);
+        String normalizedDomainId = domainModelService.normalizeDomainId(domainId);
         entries.put("type", "video.uploaded");
         entries.put("video_id", videoId);
         entries.put("user_id", userId);
         entries.put("tenant_id", "default");
+        entries.put("domain_id", normalizedDomainId);
         entries.put("profile", profile);
         entries.put("s3_raw_path", s3Key);
         entries.put("source_file", sourceFile == null || sourceFile.isBlank() ? "video.mp4" : sourceFile);
+        if (benchmarkRunId != null && !benchmarkRunId.isBlank()) {
+            entries.put("benchmark_run_id", benchmarkRunId);
+        }
+        if (!normalizedFewShotLabel.isBlank()) {
+            entries.put("few_shot_example", "true");
+            entries.put("few_shot_label", normalizedFewShotLabel);
+            entries.put("few_shot_model_id", fewShotLearningService.modelId(userId, normalizedDomainId));
+            fewShotLearningService.recordExample(userId, normalizedDomainId, normalizedFewShotLabel, videoId, sourceFile, s3Key);
+            domainModelService.recordExample(userId, normalizedDomainId, normalizedFewShotLabel, videoId, sourceFile, s3Key);
+        }
         stream.add(StreamAddArgs.entries(entries));
     }
 }

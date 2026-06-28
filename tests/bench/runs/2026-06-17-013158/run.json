@@ -1,0 +1,10 @@
+{
+  "api": "http://localhost:8080",
+  "batch_size": 0,
+  "clip_count": 2300,
+  "data_dir": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data",
+  "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+  "profile": "cctv",
+  "search_limit": 20,
+  "upload_workers": 8
+}

@@ -18,6 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final BenchmarkAuthFilter benchmarkAuthFilter;
 
     @Value("${FRONTEND_ORIGIN:http://localhost:3000}")
     private String frontendOrigin;
@@ -47,7 +48,8 @@ public class SecurityConfig {
                 .defaultAuthenticationEntryPointFor(
                     new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
                     new AntPathRequestMatcher("/ws/**"))
-            );
+            )
+            .addFilterBefore(benchmarkAuthFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

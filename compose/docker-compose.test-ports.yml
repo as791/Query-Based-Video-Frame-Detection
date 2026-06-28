@@ -1,0 +1,16 @@
+services:
+  mongo:
+    ports:
+      - "27017:27017"
+  postgres:
+    ports:
+      - "5432:5432"
+  qdrant:
+    ports:
+      - "6333:6333"
+  redis:
+    ports:
+      - "6379:6379"
+  embedder:
+    ports:
+      - "8002:8002"

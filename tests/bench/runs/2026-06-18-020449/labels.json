@@ -1,0 +1,122 @@
+{
+  "0973a266-be5f-46af-9a27-9e3df7077515": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0008_fall_1.mp4",
+    "source_file": "NTU_fight0008_fall_1.mp4"
+  },
+  "19704e6a-a0a0-431e-8014-34c564eadca0": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0105_fall_1.mp4",
+    "source_file": "NTU_fight0105_fall_1.mp4"
+  },
+  "3fefbff2-2a70-4cb7-bd1f-83dff2570fcd": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0009_fall_1.mp4",
+    "source_file": "NTU_fight0009_fall_1.mp4"
+  },
+  "56650710-fb30-4f22-87b8-c5f38c778d82": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0092_fall_1.mp4",
+    "source_file": "NTU_fight0092_fall_1.mp4"
+  },
+  "7626c311-3798-4477-aaa1-5fcd3450d74e": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0069_fall_1.mp4",
+    "source_file": "NTU_fight0069_fall_1.mp4"
+  },
+  "7ab1d0f9-bbda-40ee-b3b1-4d766d1de454": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0023_fall_1.mp4",
+    "source_file": "NTU_fight0023_fall_1.mp4"
+  },
+  "7c2d1a02-6bc4-4a43-ab72-ceccbbcedf54": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0036_fall_1.mp4",
+    "source_file": "NTU_fight0036_fall_1.mp4"
+  },
+  "7c628f50-7cc1-4eb0-869a-7e18f5500d35": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0172_fall_1.mp4",
+    "source_file": "NTU_fight0172_fall_1.mp4"
+  },
+  "898840ce-5b28-4f66-8a54-bfc87f20a522": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_2.mp4",
+    "source_file": "NTU_fight0003_fall_2.mp4"
+  },
+  "8cd54979-217e-42a9-8d65-ad400f245685": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0114_fall_1.mp4",
+    "source_file": "NTU_fight0114_fall_1.mp4"
+  },
+  "9561f808-7156-4b70-affd-f876dbbd16cd": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_1.mp4",
+    "source_file": "NTU_fight0146_fall_1.mp4"
+  },
+  "97e746fd-8c94-4481-b5d1-407171f1b8e6": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0146_fall_2.mp4",
+    "source_file": "NTU_fight0146_fall_2.mp4"
+  },
+  "98125c2f-2f48-40d9-862d-ee6ba947c586": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0197_fall_1.mp4",
+    "source_file": "NTU_fight0197_fall_1.mp4"
+  },
+  "985cb205-783a-455a-8073-8ef77d83fc78": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0142_fall_1.mp4",
+    "source_file": "NTU_fight0142_fall_1.mp4"
+  },
+  "a2d88577-8e62-4fe8-b7a6-a06cc79a97f6": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0062_fall_1.mp4",
+    "source_file": "NTU_fight0062_fall_1.mp4"
+  },
+  "e474867b-6d3c-483d-b6f9-f97e5ca83c17": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0048_fall_1.mp4",
+    "source_file": "NTU_fight0048_fall_1.mp4"
+  },
+  "e4875033-09a1-4db7-a155-d0117540cef7": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0200_fall_1.mp4",
+    "source_file": "NTU_fight0200_fall_1.mp4"
+  },
+  "ea4b32c1-8883-4870-96a2-42881cd48d31": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0095_fall_1.mp4",
+    "source_file": "NTU_fight0095_fall_1.mp4"
+  },
+  "ee9f20ad-6628-41ec-b205-0684787fab0b": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0180_fall_1.mp4",
+    "source_file": "NTU_fight0180_fall_1.mp4"
+  },
+  "f3df3a1e-0c33-48f7-b409-16fd1fda9fc7": {
+    "benchmark_run_id": "taxonomy-actionscore-20-20260618",
+    "label": "fall",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/fall/NTU_fight0003_fall_1.mp4",
+    "source_file": "NTU_fight0003_fall_1.mp4"
+  }
+}

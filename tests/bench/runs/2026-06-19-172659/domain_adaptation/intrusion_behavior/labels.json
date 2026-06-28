@@ -1,0 +1,37 @@
+{
+  "158a5de8-5dc9-41d7-9aa7-1212712c7d2b": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-feedback-eval",
+    "domain_id": "intrusion_behavior-feedback-domain-1781870219",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse004_stand_2.mp4",
+    "source_file": "UCFCRIME_Abuse004_stand_2.mp4"
+  },
+  "67f4ebc7-2be2-41a0-b6bb-6de6f56212a2": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-feedback-eval",
+    "domain_id": "intrusion_behavior-feedback-domain-1781870219",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary042_sneak_1.mp4",
+    "source_file": "UCFCRIME_Burglary042_sneak_1.mp4"
+  },
+  "8368a6eb-ae4e-4407-a4a4-91a00cd0907c": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-feedback-eval",
+    "domain_id": "intrusion_behavior-feedback-domain-1781870219",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0046_run_1.mp4",
+    "source_file": "NTU_fight0046_run_1.mp4"
+  },
+  "a3040d3f-9262-49e7-8ecc-969769b08d6c": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-feedback-eval",
+    "domain_id": "intrusion_behavior-feedback-domain-1781870219",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary012_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary012_grab_1.mp4"
+  },
+  "a8495d2e-fcaf-4c66-bc1f-be209301e3d3": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-feedback-eval",
+    "domain_id": "intrusion_behavior-feedback-domain-1781870219",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse007_walk_2.mp4",
+    "source_file": "UCFCRIME_Abuse007_walk_2.mp4"
+  }
+}

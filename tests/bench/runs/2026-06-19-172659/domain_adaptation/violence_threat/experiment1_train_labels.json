@@ -1,0 +1,42 @@
+{
+  "06712cef-5956-401e-9337-342ae80f3747": {
+    "benchmark_run_id": "domain-1781870219-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870219",
+    "few_shot_label": "gun",
+    "label": "gun",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/gun/LIVELEAK_LiveLeak7_gun_1.mp4",
+    "source_file": "LIVELEAK_LiveLeak7_gun_1.mp4"
+  },
+  "8746bd04-ead2-4c55-aaff-9503ca3fb528": {
+    "benchmark_run_id": "domain-1781870219-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870219",
+    "few_shot_label": "kick",
+    "label": "kick",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/kick/NTU_fight0008_kick_1.mp4",
+    "source_file": "NTU_fight0008_kick_1.mp4"
+  },
+  "b36f5f79-89bd-4de7-aeb3-021e4da60067": {
+    "benchmark_run_id": "domain-1781870219-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870219",
+    "few_shot_label": "struggle",
+    "label": "struggle",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/struggle/LIVELEAK_LiveLeak3_struggle_1.mp4",
+    "source_file": "LIVELEAK_LiveLeak3_struggle_1.mp4"
+  },
+  "db284a69-2584-4cf2-a106-6f0ec1b31203": {
+    "benchmark_run_id": "domain-1781870219-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870219",
+    "few_shot_label": "throw",
+    "label": "throw",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/throw/NTU_fight0013_throw_1.mp4",
+    "source_file": "NTU_fight0013_throw_1.mp4"
+  },
+  "e3614578-0671-434b-b315-6028ed766027": {
+    "benchmark_run_id": "domain-1781870219-violence_threat-train",
+    "domain_id": "violence_threat-seeded-domain-1781870219",
+    "few_shot_label": "hit",
+    "label": "hit",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/hit/NTU_fight0003_hit_1.mp4",
+    "source_file": "NTU_fight0003_hit_1.mp4"
+  }
+}

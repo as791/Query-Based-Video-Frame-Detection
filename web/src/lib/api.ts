@@ -58,9 +58,12 @@ export async function presignUpload(profile = 'general', fileName = 'video.mp4',
   }>
 }
 
-export async function finalizeUpload(videoId: string, s3Key: string, profile = 'general', sourceFile = 'video.mp4') {
+export async function finalizeUpload(videoId: string, s3Key: string, profile = 'general', sourceFile = 'video.mp4', fewShotLabel = '', domainId = 'general') {
+  const params = new URLSearchParams({ s3Key, profile, sourceFile })
+  if (fewShotLabel) params.set('fewShotLabel', fewShotLabel)
+  if (domainId) params.set('domainId', domainId)
   const res = await fetch(
-    `${API}/v1/video/${videoId}/finalize?s3Key=${encodeURIComponent(s3Key)}&profile=${profile}&sourceFile=${encodeURIComponent(sourceFile)}`,
+    `${API}/v1/video/${videoId}/finalize?${params}`,
     { method: 'POST', credentials: 'include' }
   )
   if (!res.ok) {
@@ -70,10 +73,13 @@ export async function finalizeUpload(videoId: string, s3Key: string, profile = '
   return res.json()
 }
 
-export async function uploadViaBackend(file: File, profile = 'general') {
+export async function uploadViaBackend(file: File, profile = 'general', fewShotLabel = '', domainId = 'general') {
   const form = new FormData()
   form.append('file', file)
-  const res = await fetch(`${API}/v1/video/upload?profile=${profile}`, {
+  const params = new URLSearchParams({ profile })
+  if (fewShotLabel) params.set('fewShotLabel', fewShotLabel)
+  if (domainId) params.set('domainId', domainId)
+  const res = await fetch(`${API}/v1/video/upload?${params}`, {
     method: 'POST',
     credentials: 'include',
     body: form,
@@ -120,13 +126,15 @@ export async function completeMultipartUpload(
   uploadId: string,
   parts: Array<{ partNumber: number; eTag: string }>,
   profile = 'general',
-  sourceFile = 'video.mp4'
+  sourceFile = 'video.mp4',
+  fewShotLabel = '',
+  domainId = 'general'
 ) {
   const res = await fetch(`${API}/v1/video/multipart/${videoId}/complete`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ s3Key, uploadId, parts, profile, sourceFile }),
+    body: JSON.stringify({ s3Key, uploadId, parts, profile, sourceFile, fewShotLabel, domainId }),
   })
   if (!res.ok) {
     const detail = await res.text().catch(() => '')
@@ -146,6 +154,7 @@ export async function abortMultipartUpload(videoId: string, s3Key: string, uploa
 export type FrameResult = {
   s3_frame_path: string
   url: string
+  clip_url?: string
   t_ms: number
   t_chunk_ms?: number
   video_id: string
@@ -166,18 +175,213 @@ export type FrameResult = {
   initial_score?: number
   vector_score?: number
   tag_score?: number
+  action_score?: number
+  action_top?: string
+  action_labels?: string[]
   metadata_score?: number
+  domain_id?: string
+  domain_score?: number
+  feedback_score?: number
+  model_version?: string
 }
 
-export async function search(query: string, videoId?: string, minConfidence = 0.8, limit = 12) {
+export type ActionLabel = {
+  label: string
+  description: string
+}
+
+export type FewShotLabel = {
+  label: string
+  description: string
+  exampleCount: number
+  status: string
+}
+
+export type FewShotExample = {
+  videoId: string
+  label: string
+  sourceFile: string
+  s3Key: string
+  status: string
+  createdAt: string
+}
+
+export type DomainSummary = {
+  domainId: string
+  domainName: string
+  description: string
+  labelCount: number
+  exampleCount: number
+  modelVersion: string
+  updatedAt: string
+}
+
+export type DomainLabel = {
+  label: string
+  description: string
+  exampleCount: number
+  status: string
+}
+
+export type DomainModel = {
+  schemaVersion: number
+  tenantId: string
+  userId: string
+  domainId: string
+  domainName: string
+  modelVersion: string
+  labels: DomainLabel[]
+  examples: FewShotExample[]
+  feedbackStats: Record<string, number>
+  config: Record<string, unknown>
+  updatedAt: string
+}
+
+export async function listDomains() {
+  const res = await fetch(`${API}/v1/domains`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to load domains')
+  return res.json() as Promise<{ domains: DomainSummary[] }>
+}
+
+export async function createDomain(name: string, description = '') {
+  const res = await fetch(`${API}/v1/domains`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, description }),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '')
+    throw new Error(`Failed to create domain (${res.status})${detail ? `: ${detail}` : ''}`)
+  }
+  return res.json() as Promise<DomainSummary>
+}
+
+export async function getDomainModel(domainId: string) {
+  const res = await fetch(`${API}/v1/domains/${encodeURIComponent(domainId)}/model`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to load domain model')
+  return res.json() as Promise<DomainModel>
+}
+
+export async function addDomainLabel(domainId: string, label: string, description = '') {
+  const res = await fetch(`${API}/v1/domains/${encodeURIComponent(domainId)}/labels`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label, description }),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '')
+    throw new Error(`Failed to save domain label (${res.status})${detail ? `: ${detail}` : ''}`)
+  }
+  return res.json() as Promise<DomainLabel>
+}
+
+export async function listActionLabels() {
+  const res = await fetch(`${API}/v1/action-labels`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to load action labels')
+  return res.json() as Promise<{ labels: ActionLabel[] }>
+}
+
+export async function addActionLabel(label: string, description = '') {
+  const res = await fetch(`${API}/v1/action-labels`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label, description }),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '')
+    throw new Error(`Failed to save action label (${res.status})${detail ? `: ${detail}` : ''}`)
+  }
+  return res.json() as Promise<ActionLabel>
+}
+
+export async function listFewShotModel(domainId = 'general') {
+  const params = new URLSearchParams()
+  if (domainId) params.set('domainId', domainId)
+  const res = await fetch(`${API}/v1/few-shot?${params}`, {
+    credentials: 'include',
+  })
+  if (!res.ok) throw new Error('Failed to load few-shot model')
+  return res.json() as Promise<{ labels: FewShotLabel[]; examples: FewShotExample[] }>
+}
+
+export async function addFewShotLabel(label: string, description = '', domainId = 'general') {
+  const params = new URLSearchParams()
+  if (domainId) params.set('domainId', domainId)
+  const res = await fetch(`${API}/v1/few-shot/labels?${params}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ label, description }),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '')
+    throw new Error(`Failed to save few-shot label (${res.status})${detail ? `: ${detail}` : ''}`)
+  }
+  return res.json() as Promise<FewShotLabel>
+}
+
+export async function search(query: string, videoId?: string, minConfidence = 0.8, limit = 12, domainId = '') {
+  const body: Record<string, unknown> = { query, videoId, minConfidence, limit }
+  if (domainId) body.domainId = domainId
   const res = await fetch(`${API}/v1/search`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query, videoId, minConfidence, limit }),
+    body: JSON.stringify(body),
   })
   if (!res.ok) throw new Error('Search failed')
   return res.json() as Promise<FrameResult[]>
+}
+
+export async function submitSearchFeedback(input: {
+  domainId: string
+  query: string
+  videoId: string
+  frameId?: string
+  chunkId?: string
+  relevant: boolean
+}) {
+  const res = await fetch(`${API}/v1/search/feedback`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '')
+    throw new Error(`Failed to save feedback (${res.status})${detail ? `: ${detail}` : ''}`)
+  }
+  return res.json() as Promise<DomainModel>
+}
+
+export async function undoSearchFeedback(input: {
+  domainId: string
+  query: string
+  videoId: string
+  frameId?: string
+  chunkId?: string
+  relevant: boolean
+}) {
+  const res = await fetch(`${API}/v1/search/feedback/undo`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  })
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '')
+    throw new Error(`Failed to undo feedback (${res.status})${detail ? `: ${detail}` : ''}`)
+  }
+  return res.json() as Promise<DomainModel>
 }
 
 export async function frameContext(videoId: string, chunkId: string, tMs: number, window = 12) {

@@ -1,0 +1,122 @@
+{
+  "intrusion_behavior": {
+    "domain": {
+      "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+      "ingest": {
+        "videos_total": 25
+      },
+      "profile": "cctv",
+      "search": {
+        "latency_ms": {
+          "p50": 391.13,
+          "p95": 588.42
+        },
+        "map": 0.344,
+        "mrr": 0.4186,
+        "precision@5": 0.28,
+        "recall@1": 0.04,
+        "recall@20": 0.88,
+        "recall@5": 0.28
+      }
+    },
+    "generic": {
+      "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+      "ingest": {
+        "videos_total": 25
+      },
+      "profile": "cctv",
+      "search": {
+        "latency_ms": {
+          "p50": 213.24,
+          "p95": 392.42
+        },
+        "map": 0.4116,
+        "mrr": 0.6167,
+        "precision@5": 0.36,
+        "recall@1": 0.08,
+        "recall@20": 0.88,
+        "recall@5": 0.36
+      }
+    }
+  },
+  "motion_posture": {
+    "domain": {
+      "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+      "ingest": {
+        "videos_total": 30
+      },
+      "profile": "cctv",
+      "search": {
+        "latency_ms": {
+          "p50": 251.59,
+          "p95": 458.52
+        },
+        "map": 0.3099,
+        "mrr": 0.5208,
+        "precision@5": 0.3,
+        "recall@1": 0.0333,
+        "recall@20": 0.8333,
+        "recall@5": 0.3
+      }
+    },
+    "generic": {
+      "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+      "ingest": {
+        "videos_total": 30
+      },
+      "profile": "cctv",
+      "search": {
+        "latency_ms": {
+          "p50": 155.71,
+          "p95": 421.49
+        },
+        "map": 0.3312,
+        "mrr": 0.5571,
+        "precision@5": 0.3,
+        "recall@1": 0.0667,
+        "recall@20": 0.8,
+        "recall@5": 0.3
+      }
+    }
+  },
+  "violence_threat": {
+    "domain": {
+      "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+      "ingest": {
+        "videos_total": 25
+      },
+      "profile": "cctv",
+      "search": {
+        "latency_ms": {
+          "p50": 277.87,
+          "p95": 510.44
+        },
+        "map": 0.2758,
+        "mrr": 0.3908,
+        "precision@5": 0.2,
+        "recall@1": 0.04,
+        "recall@20": 0.88,
+        "recall@5": 0.2
+      }
+    },
+    "generic": {
+      "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+      "ingest": {
+        "videos_total": 25
+      },
+      "profile": "cctv",
+      "search": {
+        "latency_ms": {
+          "p50": 555.84,
+          "p95": 1108.9
+        },
+        "map": 0.2813,
+        "mrr": 0.2243,
+        "precision@5": 0.2,
+        "recall@1": 0.0,
+        "recall@20": 0.92,
+        "recall@5": 0.2
+      }
+    }
+  }
+}

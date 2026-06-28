@@ -1,0 +1,42 @@
+{
+  "239f1f4b-71b7-4a7d-a77f-88f68b9db22d": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-train",
+    "domain_id": "intrusion_behavior-seeded-domain-1781870219",
+    "few_shot_label": "sneak",
+    "label": "sneak",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/sneak/UCFCRIME_Burglary035_sneak_1.mp4",
+    "source_file": "UCFCRIME_Burglary035_sneak_1.mp4"
+  },
+  "39952098-07d6-4d19-a84e-753fd2ba3502": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-train",
+    "domain_id": "intrusion_behavior-seeded-domain-1781870219",
+    "few_shot_label": "run",
+    "label": "run",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/run/NTU_fight0037_run_1.mp4",
+    "source_file": "NTU_fight0037_run_1.mp4"
+  },
+  "516b82f3-359c-45ed-84be-628195ccac2c": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-train",
+    "domain_id": "intrusion_behavior-seeded-domain-1781870219",
+    "few_shot_label": "stand",
+    "label": "stand",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/stand/UCFCRIME_Abuse004_stand_1.mp4",
+    "source_file": "UCFCRIME_Abuse004_stand_1.mp4"
+  },
+  "6d671ee4-875d-499f-9acb-e7e8c2633510": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-train",
+    "domain_id": "intrusion_behavior-seeded-domain-1781870219",
+    "few_shot_label": "walk",
+    "label": "walk",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/walk/UCFCRIME_Abuse007_walk_1.mp4",
+    "source_file": "UCFCRIME_Abuse007_walk_1.mp4"
+  },
+  "ab1d2b9c-5ab5-46e8-a25a-be5766f816e9": {
+    "benchmark_run_id": "domain-1781870219-intrusion_behavior-train",
+    "domain_id": "intrusion_behavior-seeded-domain-1781870219",
+    "few_shot_label": "grab",
+    "label": "grab",
+    "path": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data/Videos/Videos/grab/UCFCRIME_Burglary003_grab_1.mp4",
+    "source_file": "UCFCRIME_Burglary003_grab_1.mp4"
+  }
+}

@@ -39,10 +39,28 @@ public class VectorSearchController {
     private final AwsWrapperService awsWrapperService;
     private final UserRepository userRepository;
     private final SearchRerankService searchRerankService;
+    private final ActionTaxonomyService actionTaxonomyService;
+    private final FewShotLearningService fewShotLearningService;
+    private final DomainModelService domainModelService;
     private final Map<String, FrameContextCacheEntry> frameContextCache = new ConcurrentHashMap<>();
 
     @Value("${S3_BUCKET:stage-video-bucket}")
     private String bucket;
+
+    @Value("${search.candidates.chunk-limit:100}")
+    private int chunkCandidateLimit;
+
+    @Value("${search.candidates.frame-limit:160}")
+    private int frameCandidateLimit;
+
+    @Value("${search.candidates.action-limit:160}")
+    private int actionCandidateLimit;
+
+    @Value("${search.few-shot.min-score:0.56}")
+    private double fewShotMinScore;
+
+    @Value("${search.few-shot.top-score:0.72}")
+    private double fewShotTopScore;
 
     @PostMapping
     public List<Map<String, Object>> search(
@@ -58,13 +76,29 @@ public class VectorSearchController {
         if (query == null || query.isBlank()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "query required");
 
         String videoId = (String) body.get("videoId"); // optional scope
+        String benchmarkRunId = (String) body.get("benchmarkRunId"); // optional benchmark scope
+        String domainId = domainModelService.normalizeDomainId(String.valueOf(body.getOrDefault("domainId", "")));
+        boolean domainScoped = body.containsKey("domainId") && !String.valueOf(body.getOrDefault("domainId", "")).isBlank();
         double minConfidence = clamp(number(body.getOrDefault("minConfidence", 0.8)), 0.0, 0.99);
         int limit = Math.max(1, Math.min(30, (int) number(body.getOrDefault("limit", 12))));
+        DomainModelService.DomainState domainState = domainScoped ? domainModelService.state(user.getId(), domainId) : null;
+        String fewShotAction = domainScoped
+                ? domainModelService.detectAction(user.getId(), domainId, query)
+                : fewShotLearningService.detectAction(user.getId(), query);
+        String queryAction = fewShotAction;
+        if (queryAction.isBlank()) {
+            queryAction = actionTaxonomyService.detectAction(query);
+        }
 
         List<Double> queryVector = embedderClient.embedText(query);
 
         // Stage 1: broad chunk retrieval for semantic context.
-        List<Map<String, Object>> chunks = qdrantClient.searchChunks(queryVector, user.getId(), videoId, 60);
+        List<Map<String, Object>> chunks = new ArrayList<>(qdrantClient.searchChunks(
+                queryVector, user.getId(), videoId, benchmarkRunId, domainScoped ? domainId : "", Math.max(20, chunkCandidateLimit)));
+        if (!queryAction.isBlank()) {
+            chunks.addAll(qdrantClient.scrollChunksByAction(
+                    user.getId(), videoId, benchmarkRunId, domainScoped ? domainId : "", queryAction, Math.max(20, actionCandidateLimit / 2)));
+        }
 
         Map<String, Map<String, Object>> chunkPayloads = new LinkedHashMap<>();
         Map<String, Double> chunkRankScores = new LinkedHashMap<>();
@@ -79,14 +113,92 @@ public class VectorSearchController {
         List<String> chunkIds = chunks.stream()
                 .map(c -> string(payload(c).get("chunk_id")))
                 .filter(id -> !id.isBlank())
+                .distinct()
                 .toList();
 
-        // Stage 2: broad frame retrieval scoped to those chunks when possible.
-        List<Map<String, Object>> frames = qdrantClient.searchFrames(queryVector, user.getId(), videoId, chunkIds, 80);
-        List<Map<String, Object>> candidates = buildCandidates(query, frames, chunkPayloads, chunkRankScores);
+        // Stage 2: broad frame retrieval. Search both inside semantically matching chunks and across
+        // the full scope so weak chunk retrieval does not prevent good frames from entering rerank.
+        List<Map<String, Object>> frames = new ArrayList<>(qdrantClient.searchFrames(
+                queryVector, user.getId(), videoId, benchmarkRunId, domainScoped ? domainId : "", chunkIds, Math.max(30, frameCandidateLimit)));
+        if (!chunkIds.isEmpty()) {
+            frames.addAll(qdrantClient.searchFrames(
+                    queryVector, user.getId(), videoId, benchmarkRunId, domainScoped ? domainId : "", null, Math.max(30, frameCandidateLimit / 2)));
+        }
+        if (!queryAction.isBlank()) {
+            frames.addAll(qdrantClient.scrollFramesByAction(
+                    user.getId(), videoId, benchmarkRunId, domainScoped ? domainId : "", queryAction, Math.max(30, actionCandidateLimit)));
+        }
+        if (!fewShotAction.isBlank()) {
+            frames.addAll(searchFewShotPrototypeFrames(
+                    user.getId(), videoId, benchmarkRunId, domainScoped ? domainId : "", fewShotAction, Math.max(30, actionCandidateLimit)));
+        }
+        if (domainState != null) {
+            frames.addAll(searchFeedbackPrototypeFrames(
+                    user.getId(), videoId, benchmarkRunId, domainId, domainState, query, Math.max(20, actionCandidateLimit / 2)));
+        }
+        List<Map<String, Object>> candidates = buildCandidates(query, queryAction, domainState, mergeFrameCandidates(frames), chunkPayloads, chunkRankScores);
 
         // Stage 3: LLM rerank when available, hybrid fallback otherwise.
         return searchRerankService.rerank(query, candidates, minConfidence, limit);
+    }
+
+    @PostMapping("/feedback")
+    public DomainModelService.DomainState feedback(
+            @RequestBody DomainModelService.FeedbackInput input,
+            @AuthenticationPrincipal OAuth2User oAuth2User) {
+        if (oAuth2User == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        User user = userRepository.findByGoogleSub(oAuth2User.getAttribute("sub"))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return applyFeedback(user, input);
+    }
+
+    @PostMapping("/feedback/undo")
+    public DomainModelService.DomainState undoFeedback(
+            @RequestBody DomainModelService.FeedbackInput input,
+            @AuthenticationPrincipal OAuth2User oAuth2User) {
+        if (oAuth2User == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        User user = userRepository.findByGoogleSub(oAuth2User.getAttribute("sub"))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (input.domainId() == null || input.domainId().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "domainId required");
+        }
+        Map<String, Object> point = qdrantClient.findFrameWithVector(user.getId(), input.videoId(), input.frameId(), input.chunkId());
+        List<Double> vector = vector(point.get("vector"));
+        if (vector.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "frame vector not found");
+        }
+        return domainModelService.undoFeedback(user.getId(), input, vector);
+    }
+
+    @PostMapping("/feedback/batch")
+    public Map<String, Object> feedbackBatch(
+            @RequestBody List<DomainModelService.FeedbackInput> inputs,
+            @AuthenticationPrincipal OAuth2User oAuth2User) {
+        if (oAuth2User == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        User user = userRepository.findByGoogleSub(oAuth2User.getAttribute("sub"))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        int count = 0;
+        DomainModelService.DomainState latest = null;
+        for (DomainModelService.FeedbackInput input : inputs == null ? List.<DomainModelService.FeedbackInput>of() : inputs) {
+            latest = applyFeedback(user, input);
+            count++;
+        }
+        return Map.of(
+                "count", count,
+                "domainId", latest == null ? "" : latest.domainId(),
+                "modelVersion", latest == null ? "" : latest.modelVersion());
+    }
+
+    private DomainModelService.DomainState applyFeedback(User user, DomainModelService.FeedbackInput input) {
+        if (input.domainId() == null || input.domainId().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "domainId required");
+        }
+        Map<String, Object> point = qdrantClient.findFrameWithVector(user.getId(), input.videoId(), input.frameId(), input.chunkId());
+        List<Double> vector = vector(point.get("vector"));
+        if (vector.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "frame vector not found");
+        }
+        return domainModelService.recordFeedback(user.getId(), input, vector);
     }
 
     @GetMapping("/frames/context")
@@ -144,6 +256,130 @@ public class VectorSearchController {
 
     private record FrameContextCacheEntry(long expiresAtMs, List<Map<String, Object>> frames) {}
 
+    private List<Map<String, Object>> searchFewShotPrototypeFrames(
+            String userId,
+            String videoId,
+            String benchmarkRunId,
+            String domainId,
+            String label,
+            int limit) {
+        List<Map<String, Object>> prototypes = qdrantClient.scrollFewShotExampleFrames(userId, domainId, label, 12);
+        if (prototypes.isEmpty()) return List.of();
+
+        List<Map<String, Object>> out = new ArrayList<>();
+        List<Double> centroid = meanVector(prototypes.stream()
+                .map(item -> vector(item.get("vector")))
+                .filter(vector -> !vector.isEmpty())
+                .toList());
+        if (!centroid.isEmpty()) {
+            for (Map<String, Object> hit : qdrantClient.searchFrames(centroid, userId, videoId, benchmarkRunId, domainId, null, Math.max(10, Math.min(40, limit / 2)))) {
+                Map<String, Object> payload = new LinkedHashMap<>(payload(hit));
+                annotateFewShotMatch(payload, label, number(hit.get("score")), true);
+                hit.put("payload", payload);
+                out.add(hit);
+            }
+        }
+
+        int remainingLimit = Math.max(10, limit - out.size());
+        int perPrototypeLimit = Math.max(4, Math.min(18, (int) Math.ceil(remainingLimit / (double) prototypes.size())));
+        for (Map<String, Object> prototype : prototypes) {
+            List<Double> vector = vector(prototype.get("vector"));
+            if (vector.isEmpty()) continue;
+            for (Map<String, Object> hit : qdrantClient.searchFrames(vector, userId, videoId, benchmarkRunId, domainId, null, perPrototypeLimit)) {
+                Map<String, Object> payload = new LinkedHashMap<>(payload(hit));
+                annotateFewShotMatch(payload, label, number(hit.get("score")), false);
+                hit.put("payload", payload);
+                out.add(hit);
+            }
+            if (out.size() >= limit) break;
+        }
+        return out;
+    }
+
+    private void annotateFewShotMatch(Map<String, Object> payload, String label, double score, boolean centroidMatch) {
+        double boundedScore = clamp(score, 0.0, 1.0);
+        payload.put("few_shot_score", round(Math.max(number(payload.get("few_shot_score")), boundedScore)));
+        payload.put("few_shot_match", boundedScore >= fewShotMinScore);
+        payload.put("few_shot_centroid_match", centroidMatch || Boolean.TRUE.equals(payload.get("few_shot_centroid_match")));
+        if (boundedScore >= fewShotMinScore) {
+            payload.put("action_labels", mergeLists(List.of(label), payload.get("action_labels")));
+            payload.put("action_confidence", round(Math.max(number(payload.get("action_confidence")), boundedScore)));
+        }
+        if (boundedScore >= fewShotTopScore) {
+            payload.put("action_top", label);
+        }
+    }
+
+    private List<Map<String, Object>> searchFeedbackPrototypeFrames(
+            String userId,
+            String videoId,
+            String benchmarkRunId,
+            String domainId,
+            DomainModelService.DomainState domainState,
+            String query,
+            int limit) {
+        List<List<Double>> vectors = domainModelService.positiveFeedbackVectors(domainState, query, 3);
+        if (vectors.isEmpty()) return List.of();
+        List<Map<String, Object>> out = new ArrayList<>();
+        int perVectorLimit = Math.max(5, Math.min(30, (int) Math.ceil(limit / (double) vectors.size())));
+        for (List<Double> vector : vectors) {
+            for (Map<String, Object> hit : qdrantClient.searchFrames(vector, userId, videoId, benchmarkRunId, domainId, null, perVectorLimit)) {
+                Map<String, Object> payload = new LinkedHashMap<>(payload(hit));
+                payload.put("feedback_candidate", true);
+                hit.put("payload", payload);
+                out.add(hit);
+            }
+            if (out.size() >= limit) break;
+        }
+        return out;
+    }
+
+    private List<Map<String, Object>> mergeFrameCandidates(List<Map<String, Object>> frames) {
+        Map<String, Map<String, Object>> byFrame = new LinkedHashMap<>();
+        for (Map<String, Object> frame : frames) {
+            Map<String, Object> payload = payload(frame);
+            String key = frameKey(payload);
+            if (key.isBlank()) continue;
+            Map<String, Object> existing = byFrame.get(key);
+            if (existing == null) {
+                byFrame.put(key, frame);
+                continue;
+            }
+            Map<String, Object> mergedPayload = new LinkedHashMap<>(payload(existing));
+            mergeCandidatePayload(mergedPayload, payload(frame));
+            existing.put("payload", mergedPayload);
+            existing.put("score", Math.max(number(existing.get("score")), number(frame.get("score"))));
+            if (!existing.containsKey("vector") || vector(existing.get("vector")).isEmpty()) {
+                existing.put("vector", frame.get("vector"));
+            }
+        }
+        return new ArrayList<>(byFrame.values());
+    }
+
+    private void mergeCandidatePayload(Map<String, Object> target, Map<String, Object> source) {
+        if (source.isEmpty()) return;
+        target.put("tags", mergeLists(target.get("tags"), source.get("tags")));
+        target.put("objects", mergeLists(target.get("objects"), source.get("objects")));
+        target.put("action_labels", mergeLists(target.get("action_labels"), source.get("action_labels")));
+        maxNumber(target, source, "action_confidence");
+        maxNumber(target, source, "few_shot_score");
+        maxNumber(target, source, "feedback_score");
+        maxNumber(target, source, "domain_score");
+        if (Boolean.TRUE.equals(source.get("few_shot_match"))) target.put("few_shot_match", true);
+        if (Boolean.TRUE.equals(source.get("few_shot_centroid_match"))) target.put("few_shot_centroid_match", true);
+        if (Boolean.TRUE.equals(source.get("feedback_candidate"))) target.put("feedback_candidate", true);
+        if (number(source.get("few_shot_score")) >= fewShotTopScore) {
+            target.put("action_top", source.get("action_top"));
+        } else {
+            putIfMissing(target, "action_top", source.get("action_top"));
+        }
+    }
+
+    private void maxNumber(Map<String, Object> target, Map<String, Object> source, String key) {
+        if (!source.containsKey(key)) return;
+        target.put(key, round(Math.max(number(target.get(key)), number(source.get(key)))));
+    }
+
     private long frameTime(Map<String, Object> payload) {
         Object value = payload.get("t_ms");
         if (value instanceof Number number) return number.longValue();
@@ -156,6 +392,8 @@ public class VectorSearchController {
 
     private List<Map<String, Object>> buildCandidates(
             String query,
+            String queryAction,
+            DomainModelService.DomainState domainState,
             List<Map<String, Object>> frames,
             Map<String, Map<String, Object>> chunkPayloads,
             Map<String, Double> chunkRankScores) {
@@ -175,12 +413,17 @@ public class VectorSearchController {
             double frameRankScore = 1.0 - (i / (double) total);
             double chunkRankScore = chunkRankScores.getOrDefault(chunkId, 0.0);
             double tagScore = lexicalScore(query, payload);
+            double actionScore = actionScore(queryAction, payload);
             double metadataScore = metadataScore(query, payload);
+            double feedbackScore = domainState == null ? 0.0 : domainModelService.feedbackScore(domainState, query, vector(frame.get("vector")));
+            double feedbackSignal = domainState == null || feedbackScore == 0.0 ? 0.0 : ((feedbackScore - 0.5) * 2.0);
             double initialScore = clamp(
-                    (0.35 * frameRankScore)
-                            + (0.25 * chunkRankScore)
-                            + (0.25 * tagScore)
-                            + (0.15 * metadataScore),
+                    (0.25 * frameRankScore)
+                            + (0.20 * chunkRankScore)
+                            + (0.20 * tagScore)
+                            + (0.30 * actionScore)
+                            + (0.05 * metadataScore)
+                            + (0.20 * feedbackSignal),
                     0.0,
                     1.0);
 
@@ -188,11 +431,22 @@ public class VectorSearchController {
             if (!s3Key.isBlank()) {
                 payload.put("url", awsWrapperService.generatePresignedUrl(bucket, s3Key, 10).toString());
             }
+            String chunkS3Key = string(payload.get("s3_chunk_path"));
+            if (!chunkS3Key.isBlank()) {
+                payload.put("clip_url", awsWrapperService.generatePresignedUrl(bucket, chunkS3Key, 10).toString());
+            }
             payload.put("vector_score", round(number(frame.get("score"))));
             payload.put("frame_rank_score", round(frameRankScore));
             payload.put("chunk_rank_score", round(chunkRankScore));
             payload.put("tag_score", round(tagScore));
+            payload.put("action_score", round(actionScore));
+            payload.put("query_action", queryAction);
             payload.put("metadata_score", round(metadataScore));
+            payload.put("domain_id", domainState == null ? string(payload.get("domain_id")) : domainState.domainId());
+            payload.put("domain_score", round(feedbackScore));
+            payload.put("feedback_score", round(feedbackScore));
+            payload.put("feedback_signal", round(feedbackSignal));
+            payload.put("model_version", domainState == null ? "" : domainState.modelVersion());
             payload.put("initial_score", round(initialScore));
             candidates.add(payload);
         }
@@ -207,9 +461,14 @@ public class VectorSearchController {
         putIfMissing(framePayload, "scene", chunkPayload.get("scene"));
         putIfMissing(framePayload, "motion", chunkPayload.get("motion"));
         putIfMissing(framePayload, "source_file", chunkPayload.get("source_file"));
+        putIfMissing(framePayload, "s3_chunk_path", chunkPayload.get("s3_chunk_path"));
         putIfMissing(framePayload, "analysis_confidence", chunkPayload.get("analysis_confidence"));
+        putIfMissing(framePayload, "action_top", chunkPayload.get("action_top"));
+        putIfMissing(framePayload, "action_confidence", chunkPayload.get("action_confidence"));
+        putIfMissing(framePayload, "action_scores", chunkPayload.get("action_scores"));
         framePayload.put("tags", mergeLists(framePayload.get("tags"), chunkPayload.get("tags")));
         framePayload.put("objects", mergeLists(framePayload.get("objects"), chunkPayload.get("objects")));
+        framePayload.put("action_labels", mergeLists(framePayload.get("action_labels"), chunkPayload.get("action_labels")));
     }
 
     private void putIfMissing(Map<String, Object> target, String key, Object value) {
@@ -247,8 +506,10 @@ public class VectorSearchController {
                 string(payload.get("main_activity")),
                 string(payload.get("scene")),
                 string(payload.get("motion")),
+                string(payload.get("action_top")),
                 valueText(payload.get("tags")),
-                valueText(payload.get("objects"))));
+                valueText(payload.get("objects")),
+                valueText(payload.get("action_labels"))));
         int overlap = 0;
         for (String token : queryTokens) {
             if (matchesEvidence(token, evidenceTokens)) overlap++;
@@ -260,7 +521,6 @@ public class VectorSearchController {
         Set<String> queryTokens = tokens(query);
         if (queryTokens.isEmpty()) return 0;
         Set<String> metadataTokens = tokens(String.join(" ",
-                string(payload.get("source_file")),
                 string(payload.get("profile")),
                 string(payload.get("width")),
                 string(payload.get("height")),
@@ -270,6 +530,32 @@ public class VectorSearchController {
             if (matchesEvidence(token, metadataTokens)) overlap++;
         }
         return clamp(overlap / (double) Math.min(queryTokens.size(), 5), 0.0, 1.0);
+    }
+
+    private double actionScore(String queryAction, Map<String, Object> payload) {
+        if (queryAction == null || queryAction.isBlank()) return 0.0;
+        double fewShotScore = number(payload.get("few_shot_score"));
+        if (queryAction.equals(string(payload.get("action_top")))) {
+            if (fewShotScore > 0.0) {
+                return fewShotActionScore(fewShotScore);
+            }
+            return Math.max(0.85, number(payload.get("action_confidence")));
+        }
+        for (String label : mergeLists(payload.get("action_labels"), null)) {
+            if (queryAction.equals(label)) {
+                if (fewShotScore > 0.0) {
+                    return fewShotActionScore(fewShotScore) * 0.85;
+                }
+                return Math.max(0.65, number(payload.get("action_confidence")) * 0.85);
+            }
+        }
+        return 0.0;
+    }
+
+    private double fewShotActionScore(double score) {
+        if (score < fewShotMinScore) return 0.0;
+        double normalized = (score - fewShotMinScore) / Math.max(0.0001, 1.0 - fewShotMinScore);
+        return clamp(0.50 + (normalized * 0.45), 0.0, 0.95);
     }
 
     private Set<String> tokens(String text) {
@@ -327,6 +613,32 @@ public class VectorSearchController {
         Object payload = point.get("payload");
         if (payload instanceof Map<?, ?> map) return (Map<String, Object>) map;
         return Map.of();
+    }
+
+    private List<Double> vector(Object value) {
+        if (!(value instanceof Iterable<?> iterable)) return List.of();
+        List<Double> out = new ArrayList<>();
+        for (Object item : iterable) {
+            if (item instanceof Number number) {
+                out.add(number.doubleValue());
+            }
+        }
+        return out;
+    }
+
+    private List<Double> meanVector(List<List<Double>> vectors) {
+        if (vectors.isEmpty()) return List.of();
+        int size = vectors.stream().mapToInt(List::size).min().orElse(0);
+        if (size == 0) return List.of();
+        List<Double> out = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            double sum = 0.0;
+            for (List<Double> vector : vectors) {
+                sum += vector.get(i);
+            }
+            out.add(sum / vectors.size());
+        }
+        return out;
     }
 
     private double number(Object value) {

@@ -1,0 +1,35 @@
+{
+  "api": "http://localhost:8080",
+  "data_dir": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data",
+  "domains": {
+    "intrusion_behavior": [
+      "sneak",
+      "grab",
+      "walk",
+      "run",
+      "stand"
+    ],
+    "motion_posture": [
+      "fall",
+      "lyingdown",
+      "sit",
+      "stand",
+      "walk",
+      "run"
+    ],
+    "violence_threat": [
+      "hit",
+      "kick",
+      "struggle",
+      "throw",
+      "gun"
+    ]
+  },
+  "eval_per_label": 5,
+  "feedback_hits_per_query": 5,
+  "rounds": 2,
+  "run_id": "domain-1782136582",
+  "search_limit": 20,
+  "train_per_label": 5,
+  "upload_workers": 2
+}

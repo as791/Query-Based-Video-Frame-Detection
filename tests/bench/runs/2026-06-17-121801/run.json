@@ -1,0 +1,23 @@
+{
+  "action_label_sync": true,
+  "api": "http://localhost:8080",
+  "batch_size": 100,
+  "benchmark_run_id": "taxonomy-smoke-20b-20260617",
+  "clip_count": 20,
+  "config": {
+    "action_taxonomy_enabled": true,
+    "autoscaler_poll_interval_sec": "",
+    "extractor_max_replicas": "",
+    "extractor_min_replicas": "",
+    "search_action_candidate_limit": "",
+    "search_chunk_candidate_limit": "",
+    "search_frame_candidate_limit": "",
+    "search_llm_rerank_enabled": "",
+    "vlm_analysis_enabled": ""
+  },
+  "data_dir": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data",
+  "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+  "profile": "cctv",
+  "search_limit": 20,
+  "upload_workers": 8
+}

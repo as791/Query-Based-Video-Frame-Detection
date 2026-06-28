@@ -1,0 +1,19 @@
+{
+  "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+  "ingest": {
+    "videos_total": 1
+  },
+  "profile": "cctv",
+  "search": {
+    "latency_ms": {
+      "p50": 275.45,
+      "p95": 275.45
+    },
+    "map": 1.0,
+    "mrr": 1.0,
+    "precision@5": 0.6,
+    "recall@1": 1.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0
+  }
+}

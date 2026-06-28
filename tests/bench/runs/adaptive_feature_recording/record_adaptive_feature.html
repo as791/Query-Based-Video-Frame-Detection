@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Adaptive Learning Feature Recording</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #111827;
+      color: #e5e7eb;
+      font: 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(1280px, 100vw);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #0f172a;
+    }
+    .status {
+      padding: 12px 16px;
+      color: #cbd5e1;
+    }
+    a {
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+<main>
+  <canvas id="stage" width="1280" height="720"></canvas>
+  <div class="status" id="status">Preparing recording...</div>
+  <textarea id="recordingData" hidden></textarea>
+</main>
+<script>
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const statusEl = document.getElementById('status');
+const W = canvas.width;
+const H = canvas.height;
+
+const slides = [
+  {
+    kind: 'image',
+    image: '01_features_domain_labels.jpg',
+    title: '1. Create a Domain Profile',
+    body: 'A user creates a domain scoped by tenantId + userId + domainId. Labels such as fall and gun define what this user wants the model to focus on.',
+    seconds: 6
+  },
+  {
+    kind: 'image',
+    image: '01_features_domain_labels.jpg',
+    title: '2. Add Few-Shot Labels and Examples',
+    body: 'Each label can receive example videos. The raw frame vectors stay in Qdrant; S3 stores model metadata, example references, centroids, config, and version history.',
+    seconds: 6
+  },
+  {
+    kind: 'image',
+    image: '02_library_domain_search.jpg',
+    title: '3. Search Inside the Selected Domain',
+    body: 'Search requests carry domainId. The ranker detects domain labels first, retrieves generic vector candidates, prototype candidates, and feedback candidates, then merges and scores them.',
+    seconds: 6
+  },
+  {
+    kind: 'diagram',
+    title: '4. Feedback Learns Online',
+    body: 'Relevant / Not relevant updates positive and negative centroids for the domain and normalized query key. The next same-domain search uses feedback_score and domain_score during rerank.',
+    seconds: 6,
+    bullets: ['Search result -> user marks Relevant or Not relevant', 'Backend fetches the frame vector from Qdrant', 'Centroids update in Redis and canonical artifacts persist to S3', 'modelVersion changes, and later searches are reranked for that domain']
+  },
+  {
+    kind: 'diagram',
+    title: '5. Storage and Isolation',
+    body: 'Browser storage is only a UI cache. Authoritative state lives server-side so domain adaptation remains reproducible, isolated, and shareable across sessions.',
+    seconds: 6,
+    bullets: ['S3: user-models/{tenantId}/{userId}/{domainId}/current/model.json', 'S3: versioned model.json and feedback.jsonl artifacts', 'Redis: domain-model:{tenantId}:{userId}:{domainId}', 'Qdrant: frame/chunk vectors with domain_id, action labels, and payload metadata']
+  }
+];
+
+const images = {};
+
+function wrapText(text, x, y, maxWidth, lineHeight) {
+  const words = text.split(/\s+/);
+  let line = '';
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = word;
+      y += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  if (line) ctx.fillText(line, x, y);
+  return y + lineHeight;
+}
+
+function drawImageCover(img) {
+  const scale = Math.max(W / img.width, H / img.height);
+  const width = img.width * scale;
+  const height = img.height * scale;
+  ctx.drawImage(img, (W - width) / 2, (H - height) / 2, width, height);
+}
+
+function overlay(title, body) {
+  const panelX = 48;
+  const panelY = 420;
+  const panelW = 1184;
+  const panelH = 236;
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+  ctx.fillRect(panelX, panelY, panelW, panelH);
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(panelX, panelY, panelW, panelH);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 38px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
+  ctx.fillText(title, panelX + 28, panelY + 58);
+  ctx.fillStyle = '#dbeafe';
+  ctx.font = '24px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
+  wrapText(body, panelX + 28, panelY + 104, panelW - 56, 34);
+}
+
+function drawDiagram(slide) {
+  const gradient = ctx.createLinearGradient(0, 0, W, H);
+  gradient.addColorStop(0, '#0f172a');
+  gradient.addColorStop(1, '#172554');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 48px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
+  ctx.fillText(slide.title, 72, 90);
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '25px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
+  wrapText(slide.body, 72, 142, 1040, 36);
+  const colors = ['#0369a1', '#047857', '#7c3aed', '#b45309'];
+  let y = 270;
+  slide.bullets.forEach((item, idx) => {
+    ctx.fillStyle = colors[idx % colors.length];
+    ctx.fillRect(72, y - 30, 24, 24);
+    ctx.fillStyle = '#e5e7eb';
+    ctx.font = '25px -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif';
+    y = wrapText(item, 116, y - 8, 1020, 34) + 18;
+  });
+}
+
+function drawSlide(slide) {
+  if (slide.kind === 'image') {
+    drawImageCover(images[slide.image]);
+    overlay(slide.title, slide.body);
+  } else {
+    drawDiagram(slide);
+  }
+}
+
+async function loadImages() {
+  await Promise.all(slides.filter(s => s.image).map(slide => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      images[slide.image] = img;
+      resolve();
+    };
+    img.onerror = reject;
+    img.src = slide.image;
+  })));
+}
+
+async function record() {
+  await loadImages();
+  const stream = canvas.captureStream(30);
+  const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+  const chunks = [];
+  recorder.ondataavailable = event => {
+    if (event.data.size) chunks.push(event.data);
+  };
+  recorder.start();
+  for (const slide of slides) {
+    drawSlide(slide);
+    await new Promise(resolve => setTimeout(resolve, slide.seconds * 1000));
+  }
+  recorder.stop();
+  await new Promise(resolve => recorder.onstop = resolve);
+  const blob = new Blob(chunks, { type: 'video/webm' });
+  const dataUrl = await new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+  window.__recordingDataUrl = dataUrl;
+  document.getElementById('recordingData').value = dataUrl;
+  const url = URL.createObjectURL(blob);
+  statusEl.innerHTML = `Recording complete. <a href="${url}" download="adaptive_learning_feature_walkthrough.webm">Download WebM</a>`;
+}
+
+record().catch(error => {
+  console.error(error);
+  statusEl.textContent = `Recording failed: ${error.message}`;
+});
+</script>
+</body>
+</html>

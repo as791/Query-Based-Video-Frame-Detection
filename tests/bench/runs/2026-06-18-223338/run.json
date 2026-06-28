@@ -1,0 +1,41 @@
+{
+  "action_label_sync": true,
+  "api": "http://localhost:8080",
+  "batch_size": 100,
+  "benchmark_run_id": "taxonomy-fewshot-fast-1000b-20260618",
+  "clip_count": 1000,
+  "config": {
+    "action_scoring_enabled": "true",
+    "action_scoring_frame_top_k": "3",
+    "action_scoring_min_raw_score": "0.08",
+    "action_scoring_top_k": "5",
+    "action_taxonomy_enabled": true,
+    "autoscaler_poll_interval_sec": "",
+    "chunker_max_replicas": "4",
+    "chunker_min_replicas": "1",
+    "extractor_max_replicas": "1",
+    "extractor_min_replicas": "1",
+    "normalizer_max_replicas": "4",
+    "normalizer_min_replicas": "1",
+    "search_action_candidate_limit": "160",
+    "search_chunk_candidate_limit": "100",
+    "search_frame_candidate_limit": "160",
+    "search_llm_rerank_enabled": "false",
+    "vlm_analysis_enabled": "false",
+    "vlm_failure_backoff_sec": "20",
+    "vlm_failure_threshold": "3",
+    "vlm_failure_window_sec": "120",
+    "vlm_timeout_sec": "12"
+  },
+  "data_dir": "/Users/aryaman.sinha/Query-Based-Video-Frame-Detection/tests/bench/data",
+  "dataset": "kaggle:jonathannield/cctv-action-recognition-dataset",
+  "few_shot": {
+    "enabled": true,
+    "example_count": 65,
+    "examples_per_label": 5,
+    "run_id": "taxonomy-fewshot-fast-1000b-20260618-fewshot"
+  },
+  "profile": "cctv",
+  "search_limit": 20,
+  "upload_workers": 8
+}

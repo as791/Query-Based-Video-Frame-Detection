@@ -1,0 +1,6 @@
+{"hits": [], "label": "fall", "latency_ms": 106.57, "query": "a person fall"}
+{"hits": [], "label": "lyingdown", "latency_ms": 69.85, "query": "a person lying down"}
+{"hits": [], "label": "run", "latency_ms": 150.66, "query": "a person run"}
+{"hits": [], "label": "sit", "latency_ms": 253.24, "query": "a person sit"}
+{"hits": [], "label": "stand", "latency_ms": 68.12, "query": "a person stand"}
+{"hits": [], "label": "walk", "latency_ms": 56.18, "query": "a person walk"}

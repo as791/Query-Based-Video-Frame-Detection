@@ -1,0 +1,5 @@
+{"hits": [], "label": "grab", "latency_ms": 73.9, "query": "a person grab"}
+{"hits": [], "label": "run", "latency_ms": 147.41, "query": "a person run"}
+{"hits": [], "label": "sneak", "latency_ms": 73.41, "query": "a person sneak"}
+{"hits": [], "label": "stand", "latency_ms": 59.14, "query": "a person stand"}
+{"hits": [], "label": "walk", "latency_ms": 58.52, "query": "a person walk"}

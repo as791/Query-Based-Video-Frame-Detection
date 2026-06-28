@@ -1,0 +1,13 @@
+{
+  "fall": {
+    "average_precision": 3.0,
+    "first_rank": 1,
+    "mrr": 1.0,
+    "precision@5": 1.0,
+    "query": "a person fall",
+    "recall@1": 1.0,
+    "recall@20": 1.0,
+    "recall@5": 1.0,
+    "relevant_total": 1
+  }
+}
